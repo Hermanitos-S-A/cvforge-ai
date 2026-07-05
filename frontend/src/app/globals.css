@@ -1,3 +1,118 @@
 
 /* Import component utilities */
-@import './components.css';
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --background: 240 12% 5%;
+        --foreground: 240 5% 92%;
+        --card: 240 10% 8%;
+        --card-foreground: 240 5% 92%;
+        --primary: 248 90% 68%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 240 8% 13%;
+        --secondary-foreground: 240 5% 80%;
+        --muted: 240 8% 13%;
+        --muted-foreground: 240 5% 55%;
+        --accent: 248 90% 68%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 62% 50%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 240 8% 16%;
+        --input: 240 8% 16%;
+        --ring: 248 90% 68%;
+        --radius: 0.75rem;
+    }
+
+    .light {
+        --background: 0 0% 98%;
+        --foreground: 240 10% 8%;
+        --card: 0 0% 100%;
+        --card-foreground: 240 10% 8%;
+        --primary: 248 90% 60%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 240 5% 94%;
+        --secondary-foreground: 240 6% 20%;
+        --muted: 240 5% 94%;
+        --muted-foreground: 240 4% 46%;
+        --accent: 248 90% 60%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 72% 51%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 240 6% 90%;
+        --input: 240 6% 90%;
+        --ring: 248 90% 60%;
+    }
+}
+
+@layer base {
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    body {
+        @apply bg-background text-foreground antialiased;
+        font-family: 'Sora', system-ui, -apple-system, sans-serif;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-semibold tracking-tight;
+    }
+}
+
+@layer components {
+    .input-base {
+        @apply w-full px-4 py-2.5 rounded-xl border border-border bg-secondary/50 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all text-foreground;
+    }
+
+    .btn-primary {
+        @apply px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-90 transition-all disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer;
+    }
+
+    .btn-ghost {
+        @apply px-4 py-2.5 rounded-xl border border-border text-sm font-medium hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground cursor-pointer;
+    }
+
+    .glass {
+        background: hsl(var(--card) / 0.8);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid hsl(var(--border) / 0.5);
+    }
+
+    .text-gradient {
+        background: linear-gradient(135deg, hsl(248 90% 75%), hsl(190 80% 65%));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .glow {
+        box-shadow: 0 0 24px hsl(248 90% 68% / 0.3);
+    }
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 10px;
+}
