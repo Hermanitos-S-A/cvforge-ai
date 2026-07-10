@@ -1,46 +1,59 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Globe, Download, ExternalLink, Loader2, Rocket } from "lucide-react";
+import { Globe, Download, ExternalLink, Loader2, Rocket, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
-import { useResumeStore } from "@/stores/resumeStore";
+import { useAuth } from "@/hooks/useAuth";
+import { useResume } from "@/hooks/useResume";
 import { api } from "@/lib/api";
 
 export default function PortfolioPage() {
-  const { resume } = useResumeStore();
+  useAuth();
+  const { resume, serverResumeId } = useResume();
   const [downloading, setDownloading] = useState(false);
-
   const p = resume.personal;
-  const name = p.name || "Your Name";
-  const title = p.title || "Software Engineer";
+  const displayName = p.name || "Tu Nombre";
+  const displayTitle = p.title || "Software Engineer";
 
   const downloadHTML = async () => {
+    if (!serverResumeId) {
+      toast.error("Primero guarda tu CV en 'Mi Perfil'");
+      return;
+    }
     setDownloading(true);
     try {
-      const blob = await api.exportPortfolioHTML(1);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
+      const blob = await api.exportPortfolioHTML(serverResumeId);
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href     = url;
       a.download = "portfolio.html";
       a.click();
       URL.revokeObjectURL(url);
-      toast.success("Portfolio HTML downloaded!");
+      toast.success("Portafolio HTML descargado!");
     } catch {
-      toast.error("Make sure the backend is running");
-    } finally {
-      setDownloading(false);
-    }
+      toast.error("Error al generar portafolio — verifica que el backend esté corriendo");
+    } finally { setDownloading(false); }
   };
+
+  const sections = [
+    "Hero & Bio",
+    "Grid de habilidades",
+    "Timeline de experiencia",
+    "Cards de proyectos",
+    "Links de contacto",
+    "Diseño responsive",
+    "Dark mode incluido",
+  ];
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex items-center gap-3 mb-6">
         <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
-          <Globe size={18} className="text-primary" />
+          <Globe size={17} className="text-primary" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold">Portfolio Generator</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">Auto-generate a stunning portfolio from your CV data</p>
+          <h1 className="text-2xl font-bold">Generador de Portafolio</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">Web personal generada automáticamente desde tu CV</p>
         </div>
       </div>
 
@@ -53,65 +66,63 @@ export default function PortfolioPage() {
               <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
               <div className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
-              <div className="flex-1 mx-3 bg-white/5 rounded-full px-3 py-1 text-[11px] text-white/30 font-mono">
-                {p.portfolio || `${(p.name || "you").toLowerCase().replace(/\s/g, "")}.cvforge.dev`}
+              <div className="flex-1 mx-3 bg-white/5 rounded-full px-3 py-1 text-[11px] text-white/30 font-mono truncate">
+                {p.portfolio || `${displayName.toLowerCase().replace(/\s/g,"-")}.cvforge.dev`}
               </div>
             </div>
 
-            {/* Portfolio preview */}
-            <div className="p-0 text-white/90 text-xs">
+            {/* Portfolio content preview */}
+            <div className="text-white/90 text-xs">
               {/* Hero */}
               <div className="text-center py-8 px-6 border-b border-white/10 bg-gradient-to-b from-[#16161f] to-[#0a0a0f]">
-                <div className="text-2xl font-bold mb-1">{name}</div>
-                <div className="text-violet-400 text-sm mb-3">{title}</div>
+                <div className="text-2xl font-bold mb-1">{displayName}</div>
+                <div className="text-violet-400 text-sm mb-3">{displayTitle}</div>
                 <p className="text-white/40 text-xs max-w-sm mx-auto leading-relaxed">
-                  {resume.summary || "Passionate developer building scalable web applications and great user experiences."}
+                  {resume.summary || "Desarrollador apasionado construyendo aplicaciones web escalables y grandes experiencias de usuario."}
                 </p>
                 <div className="flex justify-center gap-3 mt-4">
-                  {p.github && <span className="px-3 py-1 rounded-full border border-white/10 text-white/50 text-[11px]">GitHub</span>}
+                  {p.github   && <span className="px-3 py-1 rounded-full border border-white/10 text-white/50 text-[11px]">GitHub</span>}
                   {p.linkedin && <span className="px-3 py-1 rounded-full border border-white/10 text-white/50 text-[11px]">LinkedIn</span>}
-                  {p.email && <span className="px-3 py-1 rounded-full border border-white/10 text-white/50 text-[11px]">Email</span>}
+                  {p.email    && <span className="px-3 py-1 rounded-full border border-white/10 text-white/50 text-[11px]">Email</span>}
                 </div>
               </div>
 
-              {/* Content sections */}
+              {/* 3 columns */}
               <div className="grid grid-cols-3 divide-x divide-white/10">
                 <div className="p-4">
-                  <div className="text-[9px] font-bold text-violet-400 uppercase tracking-widest mb-3">Skills</div>
+                  <div className="text-[9px] font-bold text-violet-400 uppercase tracking-widest mb-3">Habilidades</div>
                   <div className="flex flex-wrap gap-1">
-                    {resume.skills.slice(0, 8).map((s) => (
-                      <span key={s.name} className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white/50">{s.name}</span>
-                    ))}
-                    {resume.skills.length === 0 && (
-                      <>
-                        {["React","TypeScript","Node.js","Python","Docker"].map((s) => (
+                    {resume.skills.slice(0,6).length > 0
+                      ? resume.skills.slice(0,6).map(s => (
+                          <span key={s.name} className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white/50">{s.name}</span>
+                        ))
+                      : ["React","TypeScript","Node.js","Python"].map(s => (
                           <span key={s} className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white/50">{s}</span>
-                        ))}
-                      </>
-                    )}
+                        ))
+                    }
                   </div>
                 </div>
                 <div className="p-4">
-                  <div className="text-[9px] font-bold text-violet-400 uppercase tracking-widest mb-3">Projects</div>
-                  {(resume.projects.slice(0, 2).length > 0 ? resume.projects.slice(0, 2) : [
-                    { name: "TaskFlow Pro", description: "Full-stack project manager" },
-                    { name: "EcoTrack", description: "Carbon footprint analytics" },
-                  ]).map((p: any) => (
-                    <div key={p.name} className="mb-3 bg-white/5 rounded-lg p-2">
-                      <div className="font-medium text-[11px] text-white/80">{p.name}</div>
-                      <div className="text-[10px] text-white/40 mt-0.5">{p.description}</div>
+                  <div className="text-[9px] font-bold text-violet-400 uppercase tracking-widest mb-3">Proyectos</div>
+                  {(resume.projects.slice(0,2).length > 0 ? resume.projects.slice(0,2) : [
+                    { name:"TaskFlow Pro", description:"Gestor de proyectos full-stack" },
+                    { name:"EcoTrack",     description:"Dashboard de análisis" },
+                  ]).map((proj: any) => (
+                    <div key={proj.name} className="mb-2 bg-white/5 rounded-lg p-2">
+                      <div className="font-medium text-[11px] text-white/80">{proj.name}</div>
+                      <div className="text-[10px] text-white/40 mt-0.5">{proj.description}</div>
                     </div>
                   ))}
                 </div>
                 <div className="p-4">
-                  <div className="text-[9px] font-bold text-violet-400 uppercase tracking-widest mb-3">Experience</div>
-                  {(resume.experiences.slice(0, 2).length > 0 ? resume.experiences.slice(0, 2) : [
-                    { role: "Senior FE Engineer", company: "TechCorp", start_date: "2022", is_current: true },
-                  ]).map((e: any, i: number) => (
-                    <div key={i} className="mb-3">
-                      <div className="font-medium text-[11px] text-white/80">{e.role}</div>
-                      <div className="text-[10px] text-violet-400">{e.company}</div>
-                      <div className="text-[10px] text-white/30">{e.start_date} – {e.is_current ? "Present" : e.end_date}</div>
+                  <div className="text-[9px] font-bold text-violet-400 uppercase tracking-widest mb-3">Experiencia</div>
+                  {(resume.experiences.slice(0,2).length > 0 ? resume.experiences.slice(0,2) : [
+                    { role:"Senior FE Engineer", company:"TechCorp", start_date:"2022", is_current:true },
+                  ]).map((exp: any, i: number) => (
+                    <div key={i} className="mb-2">
+                      <div className="font-medium text-[11px] text-white/80">{exp.role}</div>
+                      <div className="text-[10px] text-violet-400">{exp.company}</div>
+                      <div className="text-[10px] text-white/30">{exp.start_date} – {exp.is_current ? "Presente" : exp.end_date}</div>
                     </div>
                   ))}
                 </div>
@@ -123,52 +134,47 @@ export default function PortfolioPage() {
         {/* Controls */}
         <div className="space-y-4">
           <div className="p-5 rounded-2xl border border-border bg-card">
-            <h3 className="font-semibold mb-4">Deploy Options</h3>
+            <h3 className="font-semibold mb-4">Opciones de deploy</h3>
             <div className="space-y-3">
-              <button
-                onClick={() => toast.success("🚀 Deploying to Vercel... check your dashboard!")}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all text-sm font-medium group"
-              >
-                <Rocket size={16} className="text-primary" />
+              <button onClick={() => toast.success("🚀 Para hacer deploy en Vercel:\n1. Descarga el HTML\n2. Sube a github.com/tu-usuario/portfolio\n3. Conecta en vercel.com")}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all text-sm font-medium group">
+                <Rocket size={15} className="text-primary" />
                 <div className="text-left">
-                  <div>Deploy to Vercel</div>
-                  <div className="text-xs text-muted-foreground font-normal">Free hosting, instant deploy</div>
+                  <div>Deploy en Vercel</div>
+                  <div className="text-xs text-muted-foreground font-normal">Hosting gratis, deploy instantáneo</div>
                 </div>
-                <ExternalLink size={12} className="ml-auto text-muted-foreground group-hover:text-primary transition-colors" />
+                <ExternalLink size={11} className="ml-auto text-muted-foreground group-hover:text-primary transition-colors" />
               </button>
 
-              <button
-                onClick={downloadHTML}
-                disabled={downloading}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all text-sm font-medium"
-              >
-                {downloading ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+              <button onClick={downloadHTML} disabled={downloading}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all text-sm font-medium">
+                {downloading ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
                 <div className="text-left">
-                  <div>Download HTML</div>
-                  <div className="text-xs text-muted-foreground font-normal">Single-file portfolio</div>
+                  <div>Descargar HTML</div>
+                  <div className="text-xs text-muted-foreground font-normal">Archivo único listo para usar</div>
                 </div>
               </button>
             </div>
           </div>
 
           <div className="p-5 rounded-2xl border border-border bg-card">
-            <h3 className="font-semibold mb-3 text-sm">Included Sections</h3>
-            <div className="space-y-2 text-sm">
-              {["Hero & Bio", "Skills Grid", "Experience Timeline", "Projects Cards", "Contact Links", "Responsive Design", "Dark Mode"].map((f) => (
-                <div key={f} className="flex items-center gap-2 text-muted-foreground">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  {f}
+            <h3 className="font-semibold mb-3 text-sm">Secciones incluidas</h3>
+            <div className="space-y-2">
+              {sections.map((s) => (
+                <div key={s} className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <CheckCircle size={12} className="text-emerald-400 flex-shrink-0" />
+                  {s}
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl border border-primary/20 bg-primary/5 text-xs text-muted-foreground">
-            <p className="font-medium text-foreground mb-1">📡 Public URL</p>
-            <p className="font-mono text-primary break-all">
-              {p.portfolio || `${(name || "you").toLowerCase().replace(/\s/g, "-")}.cvforge.dev`}
-            </p>
-          </div>
+          {p.portfolio && (
+            <div className="p-4 rounded-2xl border border-primary/20 bg-primary/5 text-xs">
+              <p className="font-medium text-foreground mb-1">🔗 URL configurada</p>
+              <p className="font-mono text-primary break-all">{p.portfolio}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

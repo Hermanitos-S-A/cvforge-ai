@@ -1,7 +1,6 @@
 version: "3.9"
 
 services:
-  # ── Backend ──────────────────────────────────────────────────────────────
   backend:
     build:
       context: ./backend
@@ -11,7 +10,7 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=sqlite:///./data/cvforge.db
-      - SECRET_KEY=${SECRET_KEY:-dev-secret-please-change}
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-change-this-in-production-32chars}
       - ALGORITHM=HS256
       - ACCESS_TOKEN_EXPIRE_MINUTES=30
       - OLLAMA_BASE_URL=http://ollama:11434
@@ -29,7 +28,6 @@ services:
       timeout: 10s
       retries: 3
 
-  # ── Frontend ─────────────────────────────────────────────────────────────
   frontend:
     build:
       context: ./frontend
@@ -43,7 +41,6 @@ services:
       - backend
     restart: unless-stopped
 
-  # ── Ollama (local AI) ─────────────────────────────────────────────────────
   ollama:
     image: ollama/ollama:latest
     container_name: cvforge-ollama
@@ -52,14 +49,6 @@ services:
     volumes:
       - ollama_models:/root/.ollama
     restart: unless-stopped
-    # For GPU support, uncomment:
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
 
 volumes:
   ollama_models:
