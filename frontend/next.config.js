@@ -2,8 +2,13 @@
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
-  images: {
-    remotePatterns: [{ protocol: "https", hostname: "**" }],
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://cvforge-backend:8000/api/:path*',
+      },
+    ];
   },
 };
 module.exports = nextConfig;
