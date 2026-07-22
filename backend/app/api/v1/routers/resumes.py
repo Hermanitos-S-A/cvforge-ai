@@ -20,10 +20,12 @@ def _owned(resume_id: int, user_id: int, db: Session) -> Resume:
         raise HTTPException(404, "Resume not found")
     return r
 
+@router.get("", response_model=List[ResumeResponse])
 @router.get("/", response_model=List[ResumeResponse])
 def list_resumes(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     return db.query(Resume).filter(Resume.user_id == current_user.id).all()
 
+@router.post("", response_model=ResumeResponse, status_code=201)
 @router.post("/", response_model=ResumeResponse, status_code=201)
 def create_resume(payload: ResumeCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     resume = Resume(
@@ -46,8 +48,6 @@ def get_resume(resume_id: int, current_user: User = Depends(get_current_user), d
 def update_resume(resume_id: int, payload: ResumeUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     resume = _owned(resume_id, current_user.id, db)
     data = payload.model_dump(exclude_unset=True)
-    if "personal" in data and data["personal"]:
-        data["personal"] = data["personal"]
     for k, v in data.items():
         setattr(resume, k, v)
     db.commit()
@@ -60,7 +60,6 @@ def delete_resume(resume_id: int, current_user: User = Depends(get_current_user)
     db.delete(resume)
     db.commit()
 
-# Experiences
 @router.post("/{resume_id}/experiences", response_model=ExperienceResponse, status_code=201)
 def add_experience(resume_id: int, payload: ExperienceCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     _owned(resume_id, current_user.id, db)
@@ -75,7 +74,6 @@ def delete_experience(resume_id: int, exp_id: int, current_user: User = Depends(
     if not exp: raise HTTPException(404, "Not found")
     db.delete(exp); db.commit()
 
-# Education
 @router.post("/{resume_id}/education", response_model=EducationResponse, status_code=201)
 def add_education(resume_id: int, payload: EducationCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     _owned(resume_id, current_user.id, db)
@@ -83,7 +81,6 @@ def add_education(resume_id: int, payload: EducationCreate, current_user: User =
     db.add(edu); db.commit(); db.refresh(edu)
     return edu
 
-# Skills
 @router.post("/{resume_id}/skills", response_model=SkillResponse, status_code=201)
 def add_skill(resume_id: int, payload: SkillCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     _owned(resume_id, current_user.id, db)
@@ -98,7 +95,6 @@ def delete_skill(resume_id: int, skill_id: int, current_user: User = Depends(get
     if not s: raise HTTPException(404, "Not found")
     db.delete(s); db.commit()
 
-# Projects
 @router.post("/{resume_id}/projects", response_model=ProjectResponse, status_code=201)
 def add_project(resume_id: int, payload: ProjectCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     _owned(resume_id, current_user.id, db)

@@ -5,18 +5,12 @@ import { api } from "@/lib/api";
 import { useResumeStore } from "@/stores/resumeStore";
 import { useAuthStore } from "@/stores/authStore";
 
-/**
- * Manages server-side resume sync.
- * - On mount: loads existing resume from server or creates one.
- * - save(): syncs local state to server.
- */
 export function useResume() {
   const store = useResumeStore();
   const { isAuthenticated } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Load resume from server on mount
   useEffect(() => {
     if (!isAuthenticated) return;
     loadResume();
@@ -26,12 +20,12 @@ export function useResume() {
     setLoading(true);
     try {
       const resumes = await api.getResumes();
-      if (resumes.length > 0) {
+      if (resumes && resumes.length > 0) {
         const r = resumes[0];
         store.setResume({
           id: r.id,
-          title: r.title,
-          template: r.template,
+          title: r.title || "My Resume",
+          template: r.template || "atlas",
           personal: r.personal || {},
           summary: r.summary || "",
           experiences: r.experiences || [],
@@ -42,7 +36,7 @@ export function useResume() {
         });
         store.setServerResumeId(r.id);
       } else {
-        // Create a default resume on first login
+        // Create default resume
         const created = await api.createResume({
           title: "My Resume",
           template: "atlas",
@@ -50,16 +44,32 @@ export function useResume() {
           summary: "",
         });
         store.setServerResumeId(created.id);
+        store.setResume({
+          id: created.id,
+          title: "My Resume",
+          template: "atlas",
+          personal: { name: "", title: "", email: "", phone: "", location: "", linkedin: "", github: "", portfolio: "" },
+          summary: "",
+          experiences: [],
+          educations: [],
+          skills: [],
+          projects: [],
+          ats_score: 0,
+        });
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to load resume:", err);
+      // Don't show error toast on load — just use local state
     } finally {
       setLoading(false);
     }
   };
 
   const save = useCallback(async () => {
-    if (!store.serverResumeId) return;
+    if (!store.serverResumeId) {
+      toast.error("No se encontró el CV — recarga la página");
+      return;
+    }
     setSaving(true);
     try {
       await api.updateResume(store.serverResumeId, {
@@ -69,9 +79,10 @@ export function useResume() {
         summary: store.resume.summary,
       });
       store.markClean();
-      toast.success("Changes saved!");
-    } catch {
-      toast.error("Failed to save. Please try again.");
+      toast.success("✅ Cambios guardados correctamente");
+    } catch (err: any) {
+      const msg = err?.response?.data?.detail || "Error al guardar";
+      toast.error(typeof msg === "string" ? msg : "Error al guardar. Intenta de nuevo.");
     } finally {
       setSaving(false);
     }
