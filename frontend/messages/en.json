@@ -1,0 +1,182 @@
+{
+  "nav": {
+    "features": "Features",
+    "how": "How it works",
+    "testimonials": "Reviews",
+    "login": "Sign in",
+    "start": "Get started free"
+  },
+  "hero": {
+    "badge": "Free · Local AI · No subscriptions",
+    "title1": "Your next job",
+    "title2": "starts with a great CV",
+    "subtitle": "Create a professional CV, check if it matches the job you want, and download it as PDF. Fast, simple, and completely free.",
+    "cta_primary": "Create my CV free",
+    "cta_secondary": "I already have an account",
+    "trust1": "No credit card",
+    "trust2": "Your data stays private",
+    "trust3": "Ready in under 10 minutes"
+  },
+  "features": {
+    "section_label": "What I can do with CVForge AI",
+    "title": "Everything you need to land that interview",
+    "subtitle": "No expertise needed. Enter your info, the platform does the rest.",
+    "items": [
+      {
+        "title": "Build your CV in minutes",
+        "desc": "Fill in your experience, education and skills from a simple form. No blank pages, no hours wasted formatting."
+      },
+      {
+        "title": "Improve your texts with AI",
+        "desc": "Write something simple and AI turns it into a professional, impactful phrase. Like having a career coach always available."
+      },
+      {
+        "title": "Check if your CV matches the job",
+        "desc": "Paste the job description and instantly see which keywords you have and which ones are missing."
+      },
+      {
+        "title": "Generate your personal website",
+        "desc": "With one click, your CV becomes a web page you can share with recruiters or put on LinkedIn."
+      }
+    ]
+  },
+  "how": {
+    "section_label": "How it works",
+    "title": "From zero to your CV in 10 minutes",
+    "subtitle": "No learning curve. Sign up, fill in your info, done.",
+    "steps": [
+      {
+        "title": "Create your account",
+        "desc": "Sign up in seconds, no card needed."
+      },
+      {
+        "title": "Complete your profile",
+        "desc": "Your experience, education and skills."
+      },
+      {
+        "title": "Review and improve",
+        "desc": "AI helps you improve every sentence."
+      },
+      {
+        "title": "Download and share",
+        "desc": "PDF ready and personal website published."
+      }
+    ]
+  },
+  "testimonials": {
+    "title": "What users are saying",
+    "subtitle": "Real people, real results.",
+    "items": [
+      {
+        "name": "Mariana R.",
+        "role": "UX Designer",
+        "text": "I used it on a Sunday afternoon. Monday I sent the CV and Wednesday I already had an interview."
+      },
+      {
+        "name": "Carlos M.",
+        "role": "Frontend Developer",
+        "text": "The job match feature was key. I realized I was missing important keywords and added them."
+      },
+      {
+        "name": "Lucia T.",
+        "role": "Recent graduate",
+        "text": "I didn't know how to write my experience professionally. The AI made it sound amazing without exaggerating."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Ready to land that interview?",
+    "subtitle": "Your CV can be ready today, in less than 10 minutes and for free.",
+    "btn_primary": "Create my CV free",
+    "btn_secondary": "I already have an account",
+    "trust1": "No credit card",
+    "trust2": "Your data is private",
+    "trust3": "Cancel anytime"
+  },
+  "footer": {
+    "free": "Free forever",
+    "open": "Open source"
+  },
+  "login": {
+    "title": "Welcome back",
+    "subtitle": "Sign in to continue",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "loading": "Signing in...",
+    "no_account": "Don't have an account?",
+    "create": "Create it free",
+    "error_credentials": "Invalid email or password",
+    "trust1": "100% free",
+    "trust2": "Local AI",
+    "trust3": "No card",
+    "perks": [
+      "ATS-optimized templates",
+      "Local AI with Ollama — free",
+      "Professional PDF export",
+      "Automatic web portfolio",
+      "No limits · No subscription"
+    ]
+  },
+  "register": {
+    "title": "Create your free account",
+    "subtitle": "No card · No limits · Local AI",
+    "full_name": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "confirm": "Confirm",
+    "submit": "Create free account",
+    "loading": "Creating account...",
+    "has_account": "Already have an account?",
+    "login_link": "Sign in",
+    "success_title": "Welcome",
+    "success_sub": "Redirecting to dashboard...",
+    "error_generic": "Error creating account",
+    "steps": [
+      {
+        "title": "Create your account",
+        "desc": "Sign up in seconds"
+      },
+      {
+        "title": "Complete your CV",
+        "desc": "Add your experience"
+      },
+      {
+        "title": "Optimize with AI",
+        "desc": "Local Mistral 7B"
+      },
+      {
+        "title": "Export and publish",
+        "desc": "PDF + web portfolio"
+      }
+    ]
+  },
+  "dashboard": {
+    "hello": "Hello",
+    "profile_complete": "Your profile is",
+    "complete": "complete",
+    "nav": {
+      "overview": "Overview",
+      "profile": "My Profile",
+      "preview": "Preview",
+      "ai": "AI Assistant",
+      "templates": "Templates",
+      "portfolio": "Portfolio",
+      "ats": "ATS Analyzer",
+      "bio": "Bio Generator",
+      "upgrade": "Upgrade to Pro",
+      "pro_active": "Pro plan active ✓",
+      "export": "Export PDF",
+      "upgrade_desc": "6 templates · Unlimited AI · Profile photo",
+      "light": "Light mode",
+      "dark": "Dark mode",
+      "logout": "Sign out"
+    }
+  },
+  "lang": {
+    "es": "Español",
+    "en": "English",
+    "pt": "Português",
+    "label": "Language"
+  }
+}

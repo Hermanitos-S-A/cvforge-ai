@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "features": "Funcionalidades",
+    "how": "Como funciona",
+    "testimonials": "Opiniões",
+    "login": "Entrar",
+    "start": "Começar grátis"
+  },
+  "hero": {
+    "badge": "Grátis · IA local · Sem assinaturas",
+    "title1": "Seu próximo emprego",
+    "title2": "começa com um bom CV",
+    "subtitle": "Crie um CV profissional, verifique se ele se encaixa na vaga e baixe em PDF. Rápido, sem complicações e sem pagar nada.",
+    "cta_primary": "Criar meu CV grátis",
+    "cta_secondary": "Já tenho uma conta",
+    "trust1": "Sem cartão de crédito",
+    "trust2": "Seus dados são só seus",
+    "trust3": "Pronto em menos de 10 minutos"
+  },
+  "features": {
+    "label": "O que posso fazer com CVForge AI",
+    "title": "Tudo que você precisa para conseguir aquela entrevista",
+    "subtitle": "Não precisa ser especialista. Insira suas informações, a plataforma faz o resto.",
+    "items": [
+      {
+        "title": "Crie seu CV em minutos",
+        "desc": "Preencha sua experiência, educação e habilidades em um formulário simples."
+      },
+      {
+        "title": "Melhore seus textos com IA",
+        "desc": "Escreva algo simples e a IA transforma em uma frase profissional e impactante."
+      },
+      {
+        "title": "Verifique se seu CV encaixa",
+        "desc": "Cole a descrição do trabalho e veja quais palavras-chave você tem e quais faltam."
+      },
+      {
+        "title": "Gere sua página pessoal",
+        "desc": "Com um clique, seu CV se torna uma página web para compartilhar com recrutadores."
+      }
+    ]
+  },
+  "how": {
+    "label": "Como funciona",
+    "title": "Do zero ao seu CV pronto em 10 minutos",
+    "subtitle": "Sem curva de aprendizado. Entre, preencha suas informações e pronto.",
+    "steps": [
+      {
+        "title": "Crie sua conta",
+        "desc": "Cadastro em segundos, sem cartão."
+      },
+      {
+        "title": "Complete seu perfil",
+        "desc": "Sua experiência, educação e habilidades."
+      },
+      {
+        "title": "Revise e melhore",
+        "desc": "A IA ajuda a melhorar cada frase."
+      },
+      {
+        "title": "Baixe e compartilhe",
+        "desc": "PDF pronto e site pessoal publicado."
+      }
+    ]
+  },
+  "reviews": {
+    "title": "O que dizem quem já usa",
+    "subtitle": "Pessoas reais, resultados reais.",
+    "items": [
+      {
+        "name": "Mariana R.",
+        "role": "Designer UX",
+        "text": "Usei num domingo à tarde. Na segunda enviei o CV e na quarta já tinha entrevista."
+      },
+      {
+        "name": "Carlos M.",
+        "role": "Desenvolvedor Frontend",
+        "text": "A compatibilidade com a vaga foi fundamental. Percebi que faltavam palavras-chave importantes."
+      },
+      {
+        "name": "Lucia T.",
+        "role": "Recém-formada",
+        "text": "Não sabia como escrever minha experiência de forma profissional. A IA ficou incrível."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Pronto para conseguir aquela entrevista?",
+    "subtitle": "Seu CV pode estar pronto hoje, em menos de 10 minutos e de graça.",
+    "primary": "Criar meu CV grátis",
+    "secondary": "Já tenho uma conta",
+    "trust1": "Sem cartão",
+    "trust2": "Seus dados são privados",
+    "trust3": "Cancele quando quiser"
+  },
+  "footer": {
+    "free": "Grátis para sempre",
+    "open": "Código aberto"
+  }
+}

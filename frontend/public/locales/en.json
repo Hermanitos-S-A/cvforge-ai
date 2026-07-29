@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "features": "Features",
+    "how": "How it works",
+    "testimonials": "Reviews",
+    "login": "Sign in",
+    "start": "Get started free"
+  },
+  "hero": {
+    "badge": "Free · Local AI · No subscriptions",
+    "title1": "Your next job",
+    "title2": "starts with a great CV",
+    "subtitle": "Create a professional CV, check if it matches the job you want, and download it as PDF. Fast, simple, and completely free.",
+    "cta_primary": "Create my CV free",
+    "cta_secondary": "I already have an account",
+    "trust1": "No credit card",
+    "trust2": "Your data stays private",
+    "trust3": "Ready in under 10 minutes"
+  },
+  "features": {
+    "label": "What I can do with CVForge AI",
+    "title": "Everything you need to land that interview",
+    "subtitle": "No expertise needed. Enter your info, the platform does the rest.",
+    "items": [
+      {
+        "title": "Build your CV in minutes",
+        "desc": "Fill in your experience, education and skills from a simple form."
+      },
+      {
+        "title": "Improve your texts with AI",
+        "desc": "Write something simple and AI turns it into a professional, impactful phrase."
+      },
+      {
+        "title": "Check if your CV matches",
+        "desc": "Paste the job description and see which keywords you have and which are missing."
+      },
+      {
+        "title": "Generate your personal website",
+        "desc": "With one click, your CV becomes a web page to share with recruiters."
+      }
+    ]
+  },
+  "how": {
+    "label": "How it works",
+    "title": "From zero to your CV in 10 minutes",
+    "subtitle": "No learning curve. Sign up, fill in your info, done.",
+    "steps": [
+      {
+        "title": "Create your account",
+        "desc": "Sign up in seconds, no card needed."
+      },
+      {
+        "title": "Complete your profile",
+        "desc": "Your experience, education and skills."
+      },
+      {
+        "title": "Review and improve",
+        "desc": "AI helps you improve every sentence."
+      },
+      {
+        "title": "Download and share",
+        "desc": "PDF ready and personal website published."
+      }
+    ]
+  },
+  "reviews": {
+    "title": "What users are saying",
+    "subtitle": "Real people, real results.",
+    "items": [
+      {
+        "name": "Mariana R.",
+        "role": "UX Designer",
+        "text": "I used it on a Sunday afternoon. Monday I sent the CV and Wednesday I already had an interview."
+      },
+      {
+        "name": "Carlos M.",
+        "role": "Frontend Developer",
+        "text": "The job match feature was key. I realized I was missing important keywords and added them."
+      },
+      {
+        "name": "Lucia T.",
+        "role": "Recent graduate",
+        "text": "I didn't know how to write my experience professionally. The AI made it sound amazing."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Ready to land that interview?",
+    "subtitle": "Your CV can be ready today, in less than 10 minutes and for free.",
+    "primary": "Create my CV free",
+    "secondary": "I already have an account",
+    "trust1": "No credit card",
+    "trust2": "Your data is private",
+    "trust3": "Cancel anytime"
+  },
+  "footer": {
+    "free": "Free forever",
+    "open": "Open source"
+  }
+}

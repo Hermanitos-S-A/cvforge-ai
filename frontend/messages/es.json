@@ -1,0 +1,182 @@
+{
+  "nav": {
+    "features": "Funciones",
+    "how": "Cómo funciona",
+    "testimonials": "Opiniones",
+    "login": "Iniciar sesión",
+    "start": "Empezar gratis"
+  },
+  "hero": {
+    "badge": "Gratis · IA local · Sin suscripciones",
+    "title1": "Tu próximo trabajo",
+    "title2": "empieza con un buen CV",
+    "subtitle": "Crea un CV profesional, verifica si encaja con la oferta que quieres y descárgalo en PDF. Rápido, sin complicaciones y sin pagar nada.",
+    "cta_primary": "Crear mi CV gratis",
+    "cta_secondary": "Ya tengo cuenta",
+    "trust1": "Sin tarjeta de crédito",
+    "trust2": "Tus datos son solo tuyos",
+    "trust3": "Listo en menos de 10 minutos"
+  },
+  "features": {
+    "section_label": "Qué puedo hacer con CVForge AI",
+    "title": "Todo lo que necesitas para conseguir esa entrevista",
+    "subtitle": "No hace falta ser experto. Ingresa tu información, la plataforma hace el resto.",
+    "items": [
+      {
+        "title": "Crea tu CV en minutos",
+        "desc": "Rellena tu experiencia, estudios y habilidades desde un formulario simple."
+      },
+      {
+        "title": "Mejora tus textos con IA",
+        "desc": "Escribe algo simple y la IA lo convierte en una frase profesional e impactante."
+      },
+      {
+        "title": "Verifica si tu CV encaja con la oferta",
+        "desc": "Pega la descripción del trabajo y ve qué palabras clave tienes y cuáles te faltan."
+      },
+      {
+        "title": "Genera tu página personal",
+        "desc": "Con un clic, tu CV se convierte en una web que puedes compartir con reclutadores."
+      }
+    ]
+  },
+  "how": {
+    "section_label": "Cómo funciona",
+    "title": "De cero a tu CV listo en 10 minutos",
+    "subtitle": "Sin curva de aprendizaje. Entra, llena tu información y listo.",
+    "steps": [
+      {
+        "title": "Crea tu cuenta",
+        "desc": "Registro en segundos, sin tarjeta."
+      },
+      {
+        "title": "Completa tu perfil",
+        "desc": "Tu experiencia, estudios y habilidades."
+      },
+      {
+        "title": "Revisa y mejora",
+        "desc": "La IA te ayuda a mejorar cada frase."
+      },
+      {
+        "title": "Descarga y comparte",
+        "desc": "PDF listo y web personal publicada."
+      }
+    ]
+  },
+  "testimonials": {
+    "title": "Lo que dicen quienes ya lo usan",
+    "subtitle": "Personas reales, resultados reales.",
+    "items": [
+      {
+        "name": "Mariana R.",
+        "role": "Diseñadora UX",
+        "text": "Lo usé un domingo por la tarde. El lunes envié el CV y el miércoles ya tenía entrevista."
+      },
+      {
+        "name": "Carlos M.",
+        "role": "Desarrollador Frontend",
+        "text": "La compatibilidad con la oferta fue clave. Me di cuenta que me faltaban palabras importantes."
+      },
+      {
+        "name": "Lucía T.",
+        "role": "Recién graduada",
+        "text": "No sabía cómo escribir mi experiencia. La IA lo hizo sonar increíble sin exagerar nada."
+      }
+    ]
+  },
+  "cta": {
+    "title": "¿Listo para conseguir esa entrevista?",
+    "subtitle": "Tu CV puede estar listo hoy, en menos de 10 minutos y sin pagar nada.",
+    "btn_primary": "Crear mi CV gratis",
+    "btn_secondary": "Ya tengo cuenta",
+    "trust1": "Sin tarjeta",
+    "trust2": "Tus datos son privados",
+    "trust3": "Cancela cuando quieras"
+  },
+  "footer": {
+    "free": "Gratuito para siempre",
+    "open": "Código abierto"
+  },
+  "login": {
+    "title": "Bienvenido de vuelta",
+    "subtitle": "Inicia sesión para continuar",
+    "email": "Email",
+    "password": "Contraseña",
+    "submit": "Iniciar sesión",
+    "loading": "Iniciando sesión...",
+    "no_account": "¿No tienes cuenta?",
+    "create": "Créala gratis",
+    "error_credentials": "Email o contraseña incorrectos",
+    "trust1": "100% gratis",
+    "trust2": "IA local",
+    "trust3": "Sin tarjeta",
+    "perks": [
+      "Plantillas ATS-optimizadas",
+      "IA local con Ollama — gratis",
+      "Exportación PDF profesional",
+      "Portafolio web automático",
+      "Sin límites · Sin suscripción"
+    ]
+  },
+  "register": {
+    "title": "Crea tu cuenta gratis",
+    "subtitle": "Sin tarjeta · Sin límites · IA local",
+    "full_name": "Nombre completo",
+    "email": "Email",
+    "password": "Contraseña",
+    "confirm": "Confirmar",
+    "submit": "Crear cuenta gratis",
+    "loading": "Creando cuenta...",
+    "has_account": "¿Ya tienes cuenta?",
+    "login_link": "Inicia sesión",
+    "success_title": "¡Bienvenido",
+    "success_sub": "Redirigiendo al dashboard...",
+    "error_generic": "Error al crear la cuenta",
+    "steps": [
+      {
+        "title": "Crea tu cuenta",
+        "desc": "Registro en segundos"
+      },
+      {
+        "title": "Completa tu CV",
+        "desc": "Agrega tu experiencia"
+      },
+      {
+        "title": "Optimiza con IA",
+        "desc": "Mistral 7B local"
+      },
+      {
+        "title": "Exporta y publica",
+        "desc": "PDF + portafolio web"
+      }
+    ]
+  },
+  "dashboard": {
+    "hello": "Hola",
+    "profile_complete": "Tu perfil está",
+    "complete": "completo",
+    "nav": {
+      "overview": "Overview",
+      "profile": "Mi Perfil",
+      "preview": "Vista Previa",
+      "ai": "Asistente IA",
+      "templates": "Plantillas",
+      "portfolio": "Portafolio",
+      "ats": "ATS Analyzer",
+      "bio": "Bio Generator",
+      "upgrade": "Actualizar a Pro",
+      "pro_active": "Plan Pro activo ✓",
+      "export": "Exportar PDF",
+      "upgrade_desc": "6 plantillas · IA ilimitada · Foto de perfil",
+      "light": "Modo claro",
+      "dark": "Modo oscuro",
+      "logout": "Cerrar sesión"
+    }
+  },
+  "lang": {
+    "es": "Español",
+    "en": "English",
+    "pt": "Português",
+    "label": "Idioma"
+  }
+}
