@@ -18,7 +18,6 @@ const steps = [
 export default function RegisterPage() {
   const router = useRouter();
   const { setTokens, setUser } = useAuthStore();
-
   const [fullName,  setFullName]  = useState("");
   const [email,     setEmail]     = useState("");
   const [password,  setPassword]  = useState("");
@@ -32,10 +31,10 @@ export default function RegisterPage() {
 
   const validate = () => {
     const e: Record<string,string> = {};
-    if (!fullName.trim() || fullName.trim().length < 2)  e.fullName = "Mínimo 2 caracteres";
-    if (!email.trim() || !/\S+@\S+\.\S+/.test(email))   e.email    = "Email inválido";
-    if (password.length < 8)                             e.password = "Mínimo 8 caracteres";
-    if (password !== confirm)                            e.confirm  = "Las contraseñas no coinciden";
+    if (!fullName.trim() || fullName.trim().length < 2) e.fullName = "Mínimo 2 caracteres";
+    if (!email.trim() || !/\S+@\S+\.\S+/.test(email))  e.email    = "Email inválido";
+    if (password.length < 8)                            e.password = "Mínimo 8 caracteres";
+    if (password !== confirm)                           e.confirm  = "Las contraseñas no coinciden";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -46,37 +45,39 @@ export default function RegisterPage() {
     if (!validate()) return;
     setLoading(true);
     try {
-      const res = await api.register(email.trim(), password, fullName.trim());
+      const res  = await api.register(email.trim(), password, fullName.trim());
       setTokens(res.access_token, res.refresh_token);
       const user = await api.getMe();
       setUser(user);
       setFirstName(fullName.trim().split(" ")[0]);
       setSuccess(true);
+      // New users always go to onboarding
       setTimeout(() => {
-        toast.success("¡Cuenta creada! Bienvenido a CVForge AI 🎉");
-        router.push("/dashboard");
-      }, 1600);
+        toast.success("¡Cuenta creada! Configuremos tu perfil 🎉");
+        router.push("/onboarding");
+      }, 1400);
     } catch (err: any) {
-      const detail = err?.response?.data?.detail;
-      setApiError(typeof detail === "string" ? detail : "Error al crear la cuenta. Intenta de nuevo.");
+      const d = err?.response?.data?.detail;
+      setApiError(typeof d === "string" ? d : "Error al crear la cuenta. Intenta de nuevo.");
     } finally { setLoading(false); }
   };
 
+  const s = { base:"rgba(255,255,255,0.04)", border:"rgba(255,255,255,0.08)", focus:"rgba(108,99,255,0.5)", focusBg:"rgba(108,99,255,0.05)" };
+
   return (
     <div className="min-h-screen flex bg-[#08080f]">
-      {/* LEFT */}
       <div className="hidden lg:flex w-72 xl:w-80 flex-shrink-0 flex-col justify-between p-10 relative overflow-hidden"
-        style={{ background:"linear-gradient(160deg,#0f0c24 0%,#080b1a 100%)" }}>
+        style={{background:"linear-gradient(160deg,#0f0c24 0%,#080b1a 100%)"}}>
         <div className="absolute -top-20 -left-20 w-72 h-72 rounded-full pointer-events-none"
-          style={{ background:"radial-gradient(circle,rgba(108,99,255,0.15) 0%,transparent 70%)" }} />
+          style={{background:"radial-gradient(circle,rgba(108,99,255,0.15) 0%,transparent 70%)"}}/>
         <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
-          style={{ backgroundImage:"linear-gradient(rgba(108,99,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,1) 1px,transparent 1px)", backgroundSize:"40px 40px" }} />
+          style={{backgroundImage:"linear-gradient(rgba(108,99,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,1) 1px,transparent 1px)",backgroundSize:"40px 40px"}}/>
         <div className="relative z-10">
           <Link href="/" className="flex items-center gap-2.5">
             <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="9" fill="url(#rgl)"/>
+              <rect width="36" height="36" rx="9" fill="url(#rlg)"/>
               <path d="M11 10H18L14 17H20L11 26H17L22 17H17L21 10" fill="white"/>
-              <defs><linearGradient id="rgl" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#6c63ff"/><stop offset="100%" stopColor="#22d3ee"/></linearGradient></defs>
+              <defs><linearGradient id="rlg" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#6c63ff"/><stop offset="100%" stopColor="#22d3ee"/></linearGradient></defs>
             </svg>
             <span className="font-bold text-[15px] text-white tracking-tight">CVForge <span style={{color:"#a78bfa"}}>AI</span></span>
           </Link>
@@ -90,7 +91,7 @@ export default function RegisterPage() {
             Del perfil al<br/><span style={{color:"#a78bfa"}}>trabajo en 4 pasos</span>
           </h2>
           <div className="space-y-5">
-            {steps.map((step,i) => (
+            {steps.map((step,i)=>(
               <div key={i} className="flex items-start gap-3">
                 <div className="relative flex-shrink-0">
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
@@ -107,30 +108,20 @@ export default function RegisterPage() {
             ))}
           </div>
         </div>
-        <div className="relative z-10">
-          <div className="p-4 rounded-xl" style={{background:"rgba(108,99,255,0.08)",border:"0.5px solid rgba(108,99,255,0.15)"}}>
-            <div className="flex items-start gap-2.5">
-              <CheckCircle size={14} className="flex-shrink-0 mt-0.5" style={{color:"#a78bfa"}}/>
-              <p className="text-xs leading-relaxed" style={{color:"rgba(255,255,255,0.40)"}}>
-                100% gratis para siempre. Sin tarjeta de crédito. IA corre localmente en tu máquina.
-              </p>
-            </div>
+        <div className="relative z-10 p-4 rounded-xl" style={{background:"rgba(108,99,255,0.08)",border:"0.5px solid rgba(108,99,255,0.15)"}}>
+          <div className="flex items-start gap-2.5">
+            <CheckCircle size={14} className="flex-shrink-0 mt-0.5" style={{color:"#a78bfa"}}/>
+            <p className="text-xs leading-relaxed" style={{color:"rgba(255,255,255,0.40)"}}>
+              100% gratis para siempre. Sin tarjeta. IA corre localmente en tu máquina.
+            </p>
           </div>
         </div>
         <div className="absolute top-0 right-0 w-px h-full" style={{background:"linear-gradient(to bottom,transparent,rgba(108,99,255,0.2),transparent)"}}/>
       </div>
 
-      {/* RIGHT */}
       <div className="flex-1 flex items-center justify-center px-6 py-10 relative overflow-hidden bg-[#0d0d18]">
         <div className="absolute inset-0 pointer-events-none"
           style={{backgroundImage:"linear-gradient(rgba(108,99,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,0.03) 1px,transparent 1px)",backgroundSize:"40px 40px"}}/>
-        <div className="absolute top-5 left-5 lg:hidden">
-          <Link href="/" className="flex items-center gap-2">
-            <svg width="24" height="24" viewBox="0 0 36 36" fill="none"><rect width="36" height="36" rx="9" fill="url(#mgl)"/><path d="M11 10H18L14 17H20L11 26H17L22 17H17L21 10" fill="white"/><defs><linearGradient id="mgl" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#6c63ff"/><stop offset="100%" stopColor="#22d3ee"/></linearGradient></defs></svg>
-            <span className="font-bold text-sm text-white">CVForge <span style={{color:"#a78bfa"}}>AI</span></span>
-          </Link>
-        </div>
-
         <AnimatePresence mode="wait">
           {success ? (
             <motion.div key="ok" initial={{opacity:0,scale:0.9}} animate={{opacity:1,scale:1}} className="relative z-10 text-center">
@@ -140,17 +131,16 @@ export default function RegisterPage() {
                 <CheckCircle size={36} className="text-white"/>
               </motion.div>
               <h2 className="text-2xl font-bold mb-2" style={{color:"#e8e8f0"}}>¡Bienvenido, {firstName}!</h2>
-              <p className="text-sm" style={{color:"rgba(255,255,255,0.4)"}}>Redirigiendo al dashboard...</p>
-              <div className="flex justify-center mt-4"><Loader2 size={18} className="animate-spin" style={{color:"#6c63ff"}}/></div>
+              <p className="text-sm mb-1" style={{color:"rgba(255,255,255,0.4)"}}>Preparando tu cuestionario de perfil...</p>
+              <Loader2 size={18} className="animate-spin mx-auto mt-3" style={{color:"#6c63ff"}}/>
             </motion.div>
           ) : (
             <motion.div key="form" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}}
-              transition={{duration:0.4,ease:[0.16,1,0.3,1]}} className="relative z-10 w-full max-w-sm">
+              transition={{duration:0.4}} className="relative z-10 w-full max-w-sm">
               <h1 className="text-[22px] font-bold tracking-tight mb-1" style={{color:"#e8e8f0"}}>Crea tu cuenta gratis</h1>
               <p className="text-sm mb-7" style={{color:"rgba(255,255,255,0.35)"}}>Sin tarjeta · Sin límites · IA local</p>
-
               <AnimatePresence>
-                {apiError && (
+                {apiError&&(
                   <motion.div initial={{opacity:0,height:0}} animate={{opacity:1,height:"auto"}} exit={{opacity:0,height:0}}
                     className="flex items-center gap-2.5 p-3 mb-4 rounded-xl text-sm overflow-hidden"
                     style={{background:"rgba(239,68,68,0.08)",border:"0.5px solid rgba(239,68,68,0.2)",color:"#f87171"}}>
@@ -158,82 +148,55 @@ export default function RegisterPage() {
                   </motion.div>
                 )}
               </AnimatePresence>
-
               <form onSubmit={handleSubmit} className="space-y-3.5" noValidate>
-                {/* Nombre completo */}
                 <div>
                   <label className="block text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{color:"rgba(255,255,255,0.28)"}}>Nombre completo</label>
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={e => setFullName(e.target.value)}
-                    placeholder="Alex Ramirez"
-                    autoComplete="name"
+                  <input type="text" value={fullName} onChange={e=>setFullName(e.target.value)}
+                    placeholder="Jhonn Pether" autoComplete="name"
                     className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
-                    style={{background:"rgba(255,255,255,0.04)",border:`0.5px solid ${errors.fullName?"rgba(239,68,68,0.5)":"rgba(255,255,255,0.08)"}`,color:"rgba(255,255,255,0.85)"}}
-                    onFocus={e=>{e.target.style.borderColor="rgba(108,99,255,0.5)";e.target.style.background="rgba(108,99,255,0.05)"}}
-                    onBlur={e=>{e.target.style.borderColor=errors.fullName?"rgba(239,68,68,0.5)":"rgba(255,255,255,0.08)";e.target.style.background="rgba(255,255,255,0.04)"}}
-                  />
-                  {errors.fullName && <p className="text-xs text-red-400 mt-1">{errors.fullName}</p>}
+                    style={{background:s.base,border:`0.5px solid ${errors.fullName?"rgba(239,68,68,0.5)":s.border}`,color:"rgba(255,255,255,0.85)"}}
+                    onFocus={e=>{e.target.style.borderColor=s.focus;e.target.style.background=s.focusBg}}
+                    onBlur={e=>{e.target.style.borderColor=errors.fullName?"rgba(239,68,68,0.5)":s.border;e.target.style.background=s.base}}/>
+                  {errors.fullName&&<p className="text-xs text-red-400 mt-1">{errors.fullName}</p>}
                 </div>
-
-                {/* Email */}
                 <div>
                   <label className="block text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{color:"rgba(255,255,255,0.28)"}}>Email</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="tu@email.com"
-                    autoComplete="email"
+                  <input type="email" value={email} onChange={e=>setEmail(e.target.value)}
+                    placeholder="tu@email.com" autoComplete="email"
                     className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
-                    style={{background:"rgba(255,255,255,0.04)",border:`0.5px solid ${errors.email?"rgba(239,68,68,0.5)":"rgba(255,255,255,0.08)"}`,color:"rgba(255,255,255,0.85)"}}
-                    onFocus={e=>{e.target.style.borderColor="rgba(108,99,255,0.5)";e.target.style.background="rgba(108,99,255,0.05)"}}
-                    onBlur={e=>{e.target.style.borderColor=errors.email?"rgba(239,68,68,0.5)":"rgba(255,255,255,0.08)";e.target.style.background="rgba(255,255,255,0.04)"}}
-                  />
-                  {errors.email && <p className="text-xs text-red-400 mt-1">{errors.email}</p>}
+                    style={{background:s.base,border:`0.5px solid ${errors.email?"rgba(239,68,68,0.5)":s.border}`,color:"rgba(255,255,255,0.85)"}}
+                    onFocus={e=>{e.target.style.borderColor=s.focus;e.target.style.background=s.focusBg}}
+                    onBlur={e=>{e.target.style.borderColor=errors.email?"rgba(239,68,68,0.5)":s.border;e.target.style.background=s.base}}/>
+                  {errors.email&&<p className="text-xs text-red-400 mt-1">{errors.email}</p>}
                 </div>
-
-                {/* Password + Confirm */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{color:"rgba(255,255,255,0.28)"}}>Contraseña</label>
                     <div className="relative">
-                      <input
-                        type={showPass?"text":"password"}
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        placeholder="Mín. 8 chars"
-                        autoComplete="new-password"
+                      <input type={showPass?"text":"password"} value={password} onChange={e=>setPassword(e.target.value)}
+                        placeholder="Mín. 8" autoComplete="new-password"
                         className="w-full px-4 py-3 pr-10 rounded-xl text-sm outline-none transition-all"
-                        style={{background:"rgba(255,255,255,0.04)",border:`0.5px solid ${errors.password?"rgba(239,68,68,0.5)":"rgba(255,255,255,0.08)"}`,color:"rgba(255,255,255,0.85)"}}
-                        onFocus={e=>{e.target.style.borderColor="rgba(108,99,255,0.5)";e.target.style.background="rgba(108,99,255,0.05)"}}
-                        onBlur={e=>{e.target.style.borderColor=errors.password?"rgba(239,68,68,0.5)":"rgba(255,255,255,0.08)";e.target.style.background="rgba(255,255,255,0.04)"}}
-                      />
+                        style={{background:s.base,border:`0.5px solid ${errors.password?"rgba(239,68,68,0.5)":s.border}`,color:"rgba(255,255,255,0.85)"}}
+                        onFocus={e=>{e.target.style.borderColor=s.focus;e.target.style.background=s.focusBg}}
+                        onBlur={e=>{e.target.style.borderColor=errors.password?"rgba(239,68,68,0.5)":s.border;e.target.style.background=s.base}}/>
                       <button type="button" onClick={()=>setShowPass(!showPass)}
                         className="absolute right-3 top-1/2 -translate-y-1/2" style={{color:"rgba(255,255,255,0.2)"}}>
                         {showPass?<EyeOff size={14}/>:<Eye size={14}/>}
                       </button>
                     </div>
-                    {errors.password && <p className="text-xs text-red-400 mt-1">{errors.password}</p>}
+                    {errors.password&&<p className="text-xs text-red-400 mt-1">{errors.password}</p>}
                   </div>
                   <div>
                     <label className="block text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{color:"rgba(255,255,255,0.28)"}}>Confirmar</label>
-                    <input
-                      type="password"
-                      value={confirm}
-                      onChange={e => setConfirm(e.target.value)}
-                      placeholder="••••••••"
-                      autoComplete="new-password"
+                    <input type="password" value={confirm} onChange={e=>setConfirm(e.target.value)}
+                      placeholder="••••••••" autoComplete="new-password"
                       className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
-                      style={{background:"rgba(255,255,255,0.04)",border:`0.5px solid ${errors.confirm?"rgba(239,68,68,0.5)":"rgba(255,255,255,0.08)"}`,color:"rgba(255,255,255,0.85)"}}
-                      onFocus={e=>{e.target.style.borderColor="rgba(108,99,255,0.5)";e.target.style.background="rgba(108,99,255,0.05)"}}
-                      onBlur={e=>{e.target.style.borderColor=errors.confirm?"rgba(239,68,68,0.5)":"rgba(255,255,255,0.08)";e.target.style.background="rgba(255,255,255,0.04)"}}
-                    />
-                    {errors.confirm && <p className="text-xs text-red-400 mt-1">{errors.confirm}</p>}
+                      style={{background:s.base,border:`0.5px solid ${errors.confirm?"rgba(239,68,68,0.5)":s.border}`,color:"rgba(255,255,255,0.85)"}}
+                      onFocus={e=>{e.target.style.borderColor=s.focus;e.target.style.background=s.focusBg}}
+                      onBlur={e=>{e.target.style.borderColor=errors.confirm?"rgba(239,68,68,0.5)":s.border;e.target.style.background=s.base}}/>
+                    {errors.confirm&&<p className="text-xs text-red-400 mt-1">{errors.confirm}</p>}
                   </div>
                 </div>
-
                 <motion.button type="submit" disabled={loading}
                   whileHover={{scale:1.01}} whileTap={{scale:0.99}}
                   className="w-full py-3.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-60 mt-1"
@@ -241,7 +204,6 @@ export default function RegisterPage() {
                   {loading?<><Loader2 size={15} className="animate-spin"/>Creando cuenta...</>:<>Crear cuenta gratis<ArrowRight size={14}/></>}
                 </motion.button>
               </form>
-
               <div className="flex items-center gap-3 my-5">
                 <div className="flex-1 h-px" style={{background:"rgba(255,255,255,0.06)"}}/>
                 <span className="text-xs" style={{color:"rgba(255,255,255,0.2)"}}>o</span>
@@ -251,13 +213,6 @@ export default function RegisterPage() {
                 ¿Ya tienes cuenta?{" "}
                 <Link href="/login" className="font-semibold hover:underline" style={{color:"#a78bfa"}}>Inicia sesión</Link>
               </p>
-              <div className="flex items-center justify-center gap-5 mt-5">
-                {[{c:"#10b981",l:"Gratis para siempre"},{c:"#6c63ff",l:"IA 100% local"}].map(({c,l})=>(
-                  <div key={l} className="flex items-center gap-1.5 text-[11px]" style={{color:"rgba(255,255,255,0.22)"}}>
-                    <span className="w-1.5 h-1.5 rounded-full" style={{background:c}}/>{l}
-                  </div>
-                ))}
-              </div>
             </motion.div>
           )}
         </AnimatePresence>

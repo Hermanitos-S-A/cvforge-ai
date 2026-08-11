@@ -1,8 +1,3 @@
-"""
-CVForge AI v1.3 — Plans Router
-Lógica de planes Free vs Pro.
-Stripe se integrará en v1.4.
-"""
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
@@ -79,7 +74,6 @@ def simulate_upgrade(
 ):
     """
     Simula upgrade a Pro (sin Stripe).
-    En v1.4 esto será reemplazado por Stripe Checkout.
     """
     if current_user.plan == "pro":
         raise HTTPException(400, "Ya tienes el plan Pro")

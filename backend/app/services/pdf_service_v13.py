@@ -1,7 +1,3 @@
-"""
-CVForge AI v1.3 — PDF Service con 6 plantillas
-Atlas, Nova, Zenith (existentes) + Nexus, Pulse, Slate (nuevas)
-"""
 import io
 import base64
 from pathlib import Path

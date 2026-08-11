@@ -1,7 +1,3 @@
-"""
-CVForge AI v1.3 — Uploads Router
-Endpoints para subir foto de perfil y gestionar avatar.
-"""
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel

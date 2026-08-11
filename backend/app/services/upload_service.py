@@ -1,7 +1,3 @@
-"""
-CVForge AI v1.3 — Upload Service
-Maneja subida y almacenamiento de fotos de perfil.
-"""
 import uuid
 import base64
 from pathlib import Path

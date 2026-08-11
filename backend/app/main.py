@@ -6,16 +6,14 @@ from pathlib import Path
 from app.core.config import settings
 from app.core.database import engine, Base
 from app.models import User, Resume, Experience, Education, Skill, Project, AIGeneration
-from app.api.v1.routers import auth, resumes, ai, ats, exports, uploads, plans
+from app.api.v1.routers import auth, resumes, ai, ats, exports, uploads, plans, payments
 
 Base.metadata.create_all(bind=engine)
-
-# Ensure upload dirs exist
 Path("data/uploads/avatars").mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(
     title=settings.APP_NAME,
-    version="1.3.0",
+    version=settings.APP_VERSION,
     docs_url="/api/docs",
     redoc_url="/api/redoc",
 )
@@ -30,17 +28,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Static files for avatar serving
 app.mount("/uploads", StaticFiles(directory="data/uploads"), name="uploads")
 
 PREFIX = "/api/v1"
-app.include_router(auth.router,    prefix=f"{PREFIX}/auth",    tags=["Auth"])
-app.include_router(resumes.router, prefix=f"{PREFIX}/resumes", tags=["Resumes"])
-app.include_router(ai.router,      prefix=f"{PREFIX}/ai",      tags=["AI"])
-app.include_router(ats.router,     prefix=f"{PREFIX}/ats",     tags=["ATS"])
-app.include_router(exports.router, prefix=f"{PREFIX}/exports", tags=["Exports"])
-app.include_router(uploads.router, prefix=f"{PREFIX}/uploads", tags=["Uploads"])
-app.include_router(plans.router,   prefix=f"{PREFIX}/plans",   tags=["Plans"])
+app.include_router(auth.router,     prefix=f"{PREFIX}/auth",     tags=["Auth"])
+app.include_router(resumes.router,  prefix=f"{PREFIX}/resumes",  tags=["Resumes"])
+app.include_router(ai.router,       prefix=f"{PREFIX}/ai",       tags=["AI"])
+app.include_router(ats.router,      prefix=f"{PREFIX}/ats",      tags=["ATS"])
+app.include_router(exports.router,  prefix=f"{PREFIX}/exports",  tags=["Exports"])
+app.include_router(uploads.router,  prefix=f"{PREFIX}/uploads",  tags=["Uploads"])
+app.include_router(plans.router,    prefix=f"{PREFIX}/plans",    tags=["Plans"])
+app.include_router(payments.router, prefix=f"{PREFIX}/payments", tags=["Payments"])
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
@@ -48,8 +46,8 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 @app.get("/health")
 def health():
-    return {"status": "healthy", "app": settings.APP_NAME, "version": "1.3.0"}
+    return {"status": "healthy", "app": settings.APP_NAME, "version": settings.APP_VERSION}
 
 @app.get("/")
 def root():
-    return {"message": "CVForge AI v1.3", "docs": "/api/docs"}
+    return {"message": "CVForge AI v1.4", "docs": "/api/docs"}

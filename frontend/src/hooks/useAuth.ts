@@ -4,27 +4,22 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/authStore";
 import { api } from "@/lib/api";
 
-/**
- * Protects a page — redirects to /login if not authenticated.
- * Also fetches fresh user data from /auth/me on mount.
- */
 export function useAuth() {
   const router = useRouter();
-  const { isAuthenticated, setUser, logout } = useAuthStore();
+  const store  = useAuthStore();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!store.isAuthenticated) {
       router.push("/login");
       return;
     }
-    // Refresh user profile
-    api.getMe()
-      .then((user) => setUser(user))
-      .catch(() => {
-        logout();
-        router.push("/login");
-      });
-  }, [isAuthenticated]);
+    const done = localStorage.getItem("cvforge-onboarding-done");
+    if (!done) {
+      router.push("/onboarding");
+      return;
+    }
+    api.getMe().then(store.setUser).catch(() => {});
+  }, [store.isAuthenticated]);
 
-  return useAuthStore();
+  return { user: store.user, isAuthenticated: store.isAuthenticated };
 }
