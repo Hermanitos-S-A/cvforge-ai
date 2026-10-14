@@ -36,3 +36,19 @@ def test_production_rejects_development_mail_sink(monkeypatch):
             ALLOWED_ORIGINS=["https://epersona.example.org"],
             SMTP_HOST="mailpit", SMTP_FROM="noreply@epersona.local",
         )
+
+
+def test_disabled_account_does_not_appear_as_unverified(verified_user):
+    from app.models import User
+
+    browser = verified_user["client"]
+    factory = verified_user["factory"]
+    with factory() as db:
+        user = db.query(User).filter(User.email == verified_user["email"]).one()
+        user.is_active = False
+        db.commit()
+    response = browser.post("/api/v1/auth/login", json={
+        "email": verified_user["email"], "password": verified_user["password"],
+    })
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Account inactive"

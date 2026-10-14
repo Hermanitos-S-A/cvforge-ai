@@ -117,7 +117,9 @@ def login(request: Request, payload: LoginRequest, response: Response, db: Sessi
     user = db.query(User).filter(User.email == str(payload.email).lower()).first()
     if not user or not verify_password(payload.password, user.hashed_password):
         raise HTTPException(401, "Invalid credentials")
-    if not user.is_active or user.email_verified_at is None:
+    if not user.is_active:
+        raise HTTPException(403, "Account inactive")
+    if user.email_verified_at is None:
         raise HTTPException(403, "Verify your email before signing in")
     tokens = _issue_tokens(db, user)
     db.commit()
