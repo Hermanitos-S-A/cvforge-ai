@@ -97,6 +97,11 @@ def verify_email(payload: VerifyEmailRequest, db: Session = Depends(get_db)):
 def resend_verification(request: Request, payload: ResendVerificationRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == str(payload.email).strip().lower()).first()
     if user and not user.email_verified_at and settings.has_smtp:
+        # Invalidate older links when a user asks for a new verification email.
+        db.query(EmailVerificationToken).filter(
+            EmailVerificationToken.user_id == user.id,
+            EmailVerificationToken.used_at.is_(None),
+        ).update({"used_at": utcnow()}, synchronize_session=False)
         token = _add_verification(db, user)
         db.commit()
         try:
