@@ -19,15 +19,15 @@ Necesitas Docker y Docker Compose. Antes de iniciar, configura una clave secreta
 
 ```bash
 export SECRET_KEY="$(python3 -c 'import secrets; print(secrets.token_urlsafe(48))')"
-docker compose up -d --build
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 docker exec epersona-ollama ollama pull mistral
 ```
 
-Abre **http://localhost:3000**. Los contenedores y las imágenes se identifican como **ePersona** y el backend utiliza un volumen administrado por Docker para evitar errores de permisos de SQLite en Windows. Ollama no expone su puerto al exterior.
+Abre **http://localhost:3000**. Para registrarte, abre **http://localhost:8025** (buzón local Mailpit), entra al correo de verificación y sigue su enlace; después inicia sesión. El buzón local no envía correos a Internet y solo debe usarse en desarrollo. Los contenedores y las imágenes se identifican como **ePersona** y el backend utiliza un volumen administrado por Docker para evitar errores de permisos de SQLite en Windows. Ollama no expone su puerto al exterior.
 
 Si utilizabas una versión anterior que guardaba usuarios y currículums en `./data`, detén el proyecto antiguo **sin `-v`**, conserva esa carpeta, ejecuta una sola vez `bash scripts/import-existing-data.sh` desde la raíz del proyecto y después inicia el nuevo Compose. El script crea una copia de respaldo y se niega a sobrescribir datos existentes. No ejecutes `docker compose down -v` porque eliminaría los volúmenes.
 
-Para registrar usuarios debes configurar un servidor de correo SMTP. Para habilitar Pro configura tus propias claves y precios de Stripe; sin ellas los pagos permanecen desactivados. En producción también necesitas HTTPS, una base de datos protegida y ejecutar las migraciones Alembic.
+Para registrar usuarios reales en producción debes configurar SMTP seguro. Para habilitar Pro configura tus propias claves y precios de Stripe; sin ellas los pagos permanecen desactivados. En producción también necesitas HTTPS, una base de datos protegida y ejecutar las migraciones Alembic.
 
 ## Tecnologías
 

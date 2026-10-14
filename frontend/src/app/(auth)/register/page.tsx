@@ -52,7 +52,9 @@ export default function RegisterPage() {
       toast.success("Registro recibido. Revisa tu correo y verifica la cuenta para continuar.");
     } catch (err: any) {
       const d = err?.response?.data?.detail;
-      setApiError(typeof d === "string" ? d : "Error al crear la cuenta. Intenta de nuevo.");
+      setApiError(err?.response?.status === 503
+        ? "El envío de correos no está disponible. Verifica la configuración de correo del servidor."
+        : typeof d === "string" ? d : "Error al crear la cuenta. Intenta de nuevo.");
     } finally { setLoading(false); }
   };
 

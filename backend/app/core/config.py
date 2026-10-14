@@ -124,6 +124,8 @@ class Settings(BaseSettings):
                 raise ValueError("Production CORS origins must use HTTPS")
             if not self.has_smtp:
                 raise ValueError("Production email registration requires SMTP_HOST and SMTP_FROM")
+            if self.SMTP_HOST.strip().lower() in {"mailpit", "localhost", "127.0.0.1", "::1"}:
+                raise ValueError("Production must not deliver verification email to local test SMTP")
         return self
 
 

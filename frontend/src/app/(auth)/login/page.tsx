@@ -26,11 +26,14 @@ export default function LoginPage() {
   const [loading,  setLoading]  = useState(false);
   const [apiError, setApiError] = useState("");
   const [errors,   setErrors]   = useState<Record<string,string>>({});
+  const [verificationRequired, setVerificationRequired] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendMessage, setResendMessage] = useState("");
 
   const validate = () => {
     const e: Record<string,string> = {};
     if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) e.email    = "Email inválido";
-    if (password.length < 8)                           e.password = "Mínimo 8 caracteres";
+    if (!password)                                    e.password = "Introduce tu contraseña";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -38,6 +41,8 @@ export default function LoginPage() {
   const handleSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
     setApiError("");
+    setVerificationRequired(false);
+    setResendMessage("");
     if (!validate()) return;
     setLoading(true);
     try {
@@ -48,8 +53,34 @@ export default function LoginPage() {
       const done = localStorage.getItem("epersona-onboarding-done") || localStorage.getItem("cvforge-onboarding-done");
       router.push(done ? "/dashboard" : "/onboarding");
     } catch (error: any) {
-      setApiError(error?.response?.status === 403 ? "Verifica tu correo electrónico antes de iniciar sesión." : "Email o contraseña incorrectos. Verifica tus datos.");
+      const detail = error?.response?.data?.detail;
+      if (error?.response?.status === 403 && detail === "Verify your email before signing in") {
+        setVerificationRequired(true);
+        setApiError("Tu correo aún no está verificado. Puedes solicitar otro enlace.");
+      } else if (error?.response?.status === 403) {
+        setApiError("Tu cuenta no está activa. Contacta con soporte.");
+      } else if (error?.response?.status === 429) {
+        setApiError("Demasiados intentos. Espera unos minutos antes de volver a intentar.");
+      } else if (!error?.response) {
+        setApiError("No se puede conectar con el servidor. Comprueba que ePersona está encendido.");
+      } else {
+        setApiError("Email o contraseña incorrectos. Verifica tus datos.");
+      }
     } finally { setLoading(false); }
+  };
+
+  const resendVerification = async () => {
+    if (!email.trim() || resending) return;
+    setResending(true);
+    setResendMessage("");
+    try {
+      await api.resendVerification(email.trim());
+      setResendMessage("Si la cuenta está pendiente de verificación, recibirás un nuevo enlace.");
+    } catch {
+      setResendMessage("No se pudo enviar el enlace. Inténtalo nuevamente más tarde.");
+    } finally {
+      setResending(false);
+    }
   };
 
   const s = { base:"rgba(255,255,255,0.04)", border:"rgba(255,255,255,0.08)", focus:"rgba(108,99,255,0.5)", focusBg:"rgba(108,99,255,0.05)" };
@@ -107,6 +138,15 @@ export default function LoginPage() {
               </motion.div>
             )}
           </AnimatePresence>
+          {verificationRequired && (
+            <div className="mb-4 text-sm" role="status">
+              <button type="button" onClick={resendVerification} disabled={resending}
+                className="min-h-11 px-3 py-2 rounded-lg border border-cyan-400/40 text-cyan-300 hover:bg-cyan-400/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300 disabled:opacity-50">
+                {resending ? "Enviando..." : "Reenviar correo de verificación"}
+              </button>
+              {resendMessage && <p className="mt-2 text-slate-300">{resendMessage}</p>}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <div>
               <label className="block text-[10px] font-semibold uppercase tracking-widest mb-2" style={{color:"rgba(255,255,255,0.28)"}}>Email</label>

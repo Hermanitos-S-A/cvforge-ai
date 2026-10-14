@@ -1,0 +1,25 @@
+# Local-only mail delivery. Add with:
+# docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+# Never use this override for production deployments.
+services:
+  backend:
+    environment:
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      SMTP_FROM: noreply@epersona.local
+      SMTP_STARTTLS: "false"
+      SMTP_USERNAME: ""
+      SMTP_PASSWORD: ""
+    depends_on:
+      mailpit:
+        condition: service_healthy
+
+  mailpit:
+    image: axllent/mailpit:v1.31.5
+    ports:
+      - "127.0.0.1:8025:8025"
+    environment:
+      MP_MAX_MESSAGES: "1000"
+      MP_DISABLE_VERSION_CHECK: "true"
+    # Deliberately ephemeral: verification emails are test data and must not
+    # become persistent records. SMTP port 1025 is not exposed to the host.

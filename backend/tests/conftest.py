@@ -23,8 +23,13 @@ from app.main import app
 @pytest.fixture
 def client():
     from app.core import limits
+    # Isolate SlowAPI's in-memory storage between tests. Production rate limits
+    # remain enabled; requests within the same test still share their quota.
+    reset = getattr(limits.limiter, "reset", None)
+    if callable(reset):
+        reset()
     if hasattr(limits, "_seen"):
-        limits._seen.clear()  # Reset the offline rate-limiter only for isolated tests.
+        limits._seen.clear()  # Offline-only fallback limiter.
     engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
     Base.metadata.create_all(bind=engine)
     factory = sessionmaker(bind=engine, autoflush=False)
