@@ -11,14 +11,8 @@ from app.core.security import hash_password
 
 router = APIRouter()
 
-ADMIN_EMAILS = {
-    "admin@cvforge.com",
-    "stefannysalas2002@gmail.com",
-    "jpsalas9@gmail.com",
-}
-
 def require_admin(current_user: User = Depends(get_current_user)):
-    if current_user.email not in ADMIN_EMAILS:
+    if current_user.role != "admin":
         raise HTTPException(403, "Acceso denegado")
     return current_user
 
@@ -60,7 +54,7 @@ def list_users(
             "plan": u.plan or "free", "is_active": u.is_active,
             "created_at": str(u.created_at)[:10] if u.created_at else None,
             "resume_count": len(u.resumes) if u.resumes else 0,
-            "is_admin": u.email in ADMIN_EMAILS,
+            "is_admin": u.role == "admin",
         } for u in users],
     }
 
@@ -84,7 +78,7 @@ class UpdateActiveRequest(BaseModel):
 def toggle_active(user_id: int, payload: UpdateActiveRequest, db: Session = Depends(get_db), admin: User = Depends(require_admin)):
     u = db.query(User).filter(User.id == user_id).first()
     if not u: raise HTTPException(404, "Usuario no encontrado")
-    if u.email in ADMIN_EMAILS: raise HTTPException(403, "No puedes modificar un admin")
+    if u.role == "admin": raise HTTPException(403, "No puedes modificar un admin")
     u.is_active = payload.is_active
     db.commit()
     return {"message": "Cuenta actualizada", "is_active": payload.is_active}
@@ -94,10 +88,11 @@ class ResetPasswordRequest(BaseModel):
 
 @router.patch("/users/{user_id}/reset-password")
 def reset_password(user_id: int, payload: ResetPasswordRequest, db: Session = Depends(get_db), admin: User = Depends(require_admin)):
-    if len(payload.new_password) < 8: raise HTTPException(400, "Mínimo 8 caracteres")
+    if not 8 <= len(payload.new_password.encode("utf-8")) <= 72: raise HTTPException(400, "Contraseña debe tener entre 8 y 72 bytes")
     u = db.query(User).filter(User.id == user_id).first()
     if not u: raise HTTPException(404, "Usuario no encontrado")
     u.hashed_password = hash_password(payload.new_password)
+    u.token_version += 1
     db.commit()
     return {"message": f"Contraseña de {u.email} reseteada"}
 
@@ -105,7 +100,7 @@ def reset_password(user_id: int, payload: ResetPasswordRequest, db: Session = De
 def delete_user(user_id: int, db: Session = Depends(get_db), admin: User = Depends(require_admin)):
     u = db.query(User).filter(User.id == user_id).first()
     if not u: raise HTTPException(404, "Usuario no encontrado")
-    if u.email in ADMIN_EMAILS: raise HTTPException(403, "No puedes eliminar un admin")
+    if u.role == "admin": raise HTTPException(403, "No puedes eliminar un admin")
     db.delete(u)
     db.commit()
     return {"message": f"Usuario {u.email} eliminado"}

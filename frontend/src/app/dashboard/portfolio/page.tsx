@@ -62,7 +62,7 @@ export default function PortfolioPage() {
               <div className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
               <div className="flex-1 mx-3 bg-white/5 rounded-full px-3 py-1 text-[11px] text-white/30 font-mono truncate">
-                {p.portfolio || displayName.toLowerCase().replace(/\s/g, "-") + ".cvforge.dev"}
+                {p.portfolio || displayName.toLowerCase().replace(/\s/g, "-") + ".tu-portafolio"}
               </div>
             </div>
             <div className="text-white/90 text-xs">

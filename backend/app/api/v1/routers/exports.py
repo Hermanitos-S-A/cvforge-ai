@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from app.core.database import get_db
@@ -7,6 +7,8 @@ from app.models import User, Resume
 from app.schemas import ExportRequest
 from app.services.pdf_service import PDFService
 from app.services.portfolio_service import PortfolioService
+from app.core.limits import limiter
+from app.services.usage_service import require_usage, record_usage
 
 router = APIRouter()
 pdf_service = PDFService()
@@ -24,17 +26,28 @@ def _to_dict(resume):
     }
 
 @router.post("/pdf")
-def export_pdf(payload: ExportRequest, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def export_pdf(request: Request, payload: ExportRequest, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     resume = db.query(Resume).filter(Resume.id == payload.resume_id, Resume.user_id == current_user.id).first()
     if not resume: raise HTTPException(404, "Resume not found")
+    require_usage(db, current_user, "pdf")
     template = payload.template or resume.template
+    if template not in ("atlas", "nova", "zenith", "nexus", "pulse", "slate"):
+        raise HTTPException(400, "Unknown template")
+    if current_user.plan != "pro" and template not in ("atlas", "nova"):
+        raise HTTPException(403, "This template requires the Pro plan")
     pdf_bytes = pdf_service.generate_cv(_to_dict(resume), template)
-    safe_name = (resume.personal or {}).get("name", "resume").replace(" ", "-").lower()
+    record_usage(db, current_user, "pdf")
+    import re
+    safe_name = re.sub(r"[^a-z0-9-]", "", (resume.personal or {}).get("name", "resume").lower().replace(" ", "-"))[:80] or "resume"
     return Response(content=pdf_bytes, media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="{safe_name}-cv.pdf"'})
 
 @router.post("/portfolio-html")
-def export_portfolio(resume_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def export_portfolio(request: Request, resume_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     resume = db.query(Resume).filter(Resume.id == resume_id, Resume.user_id == current_user.id).first()
     if not resume: raise HTTPException(404, "Resume not found")
+    require_usage(db, current_user, "portfolio")
     html = portfolio_service.generate_html(_to_dict(resume))
+    record_usage(db, current_user, "portfolio")
     return Response(content=html, media_type="text/html", headers={"Content-Disposition": "attachment; filename=portfolio.html"})

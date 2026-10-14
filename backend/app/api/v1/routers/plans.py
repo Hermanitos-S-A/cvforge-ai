@@ -67,23 +67,10 @@ def get_all_plans():
     }
 
 
-@router.post("/upgrade/simulate")
-def simulate_upgrade(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
-    """
-    Simula upgrade a Pro (sin Stripe).
-    """
-    if current_user.plan == "pro":
-        raise HTTPException(400, "Ya tienes el plan Pro")
-    current_user.plan = "pro"
-    db.commit()
-    return {
-        "message": "Plan actualizado a Pro (modo demo)",
-        "plan": "pro",
-        "features": PLAN_FEATURES["pro"],
-    }
+@router.post("/upgrade/simulate", status_code=410)
+def simulate_upgrade_disabled():
+    """Legacy endpoint: intentionally unavailable; Pro requires verified Stripe payment."""
+    raise HTTPException(410, "Demo upgrade disabled; use Stripe checkout")
 
 
 @router.post("/downgrade")
@@ -92,6 +79,8 @@ def downgrade_to_free(
     db: Session = Depends(get_db),
 ):
     """Baja al plan Free."""
+    if current_user.stripe_subscription_id and current_user.subscription_status in ("active", "trialing", "past_due"):
+        raise HTTPException(409, "Manage or cancel your active subscription in the billing portal")
     current_user.plan = "free"
     db.commit()
     return {"message": "Plan cambiado a Free", "plan": "free"}

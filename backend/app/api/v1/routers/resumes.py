@@ -12,6 +12,17 @@ from app.schemas import (
     ProjectCreate, ProjectResponse,
 )
 
+FREE_TEMPLATES = {"atlas", "nova"}
+ALL_TEMPLATES = FREE_TEMPLATES | {"zenith", "nexus", "pulse", "slate"}
+
+
+def _validate_template(template: str, user: User):
+    if template not in ALL_TEMPLATES:
+        raise HTTPException(400, "Unknown template")
+    if template not in FREE_TEMPLATES and user.plan != "pro":
+        raise HTTPException(403, "Template requires Pro")
+
+
 router = APIRouter()
 
 def _owned(resume_id: int, user_id: int, db: Session) -> Resume:
@@ -28,6 +39,7 @@ def list_resumes(current_user: User = Depends(get_current_user), db: Session = D
 @router.post("", response_model=ResumeResponse, status_code=201)
 @router.post("/", response_model=ResumeResponse, status_code=201)
 def create_resume(payload: ResumeCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    _validate_template(payload.template, current_user)
     resume = Resume(
         user_id=current_user.id,
         title=payload.title,
@@ -48,6 +60,8 @@ def get_resume(resume_id: int, current_user: User = Depends(get_current_user), d
 def update_resume(resume_id: int, payload: ResumeUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     resume = _owned(resume_id, current_user.id, db)
     data = payload.model_dump(exclude_unset=True)
+    if "template" in data and data["template"] is not None:
+        _validate_template(data["template"], current_user)
     for k, v in data.items():
         setattr(resume, k, v)
     db.commit()

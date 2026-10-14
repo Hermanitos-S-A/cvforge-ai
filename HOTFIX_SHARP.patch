@@ -1,0 +1,23 @@
+--- a/frontend/package.json
++++ b/frontend/package.json
+@@ -25,7 +25,8 @@
+     "next-themes": "0.3.0",
+     "axios": "1.7.2",
+     "clsx": "2.1.1",
+-    "tailwind-merge": "2.3.0"
++    "tailwind-merge": "2.3.0",
++    "sharp": "0.33.5"
+   },
+   "devDependencies": {
+     "typescript": "5.8.3",
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -56,7 +56,7 @@
+         condition: service_healthy
+     restart: unless-stopped
+     healthcheck:
+-      test: ["CMD", "node", "-e", "fetch('http://localhost:3000').then(x=>process.exit(x.ok?0:1)).catch(()=>process.exit(1))"]
++      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then(x=>process.exit(x.ok?0:1)).catch(()=>process.exit(1))"]
+       interval: 30s
+       timeout: 10s
+       retries: 3

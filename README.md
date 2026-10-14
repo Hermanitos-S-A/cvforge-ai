@@ -1,193 +1,40 @@
-<div align="center">
+# ePersona
 
-# ⚡ CVForge AI
+**Crea tu currículum profesional, analiza su compatibilidad ATS y mejora tu presentación con inteligencia artificial.**
 
-### Construye CVs que realmente consiguen trabajo
+Con ePersona puedes organizar tu experiencia, elegir plantillas, exportar tu CV en PDF y crear un portafolio. Está disponible en español, inglés y portugués.
 
-**100% Gratis · IA Local · Open Source · Sin API Keys**
+## ¿Cómo funciona?
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Next.js](https://img.shields.io/badge/Next.js-14.2-black?style=flat-square&logo=next.js)](https://nextjs.org)
-[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docker.com)
-[![Ollama](https://img.shields.io/badge/AI-Ollama%20%2B%20Mistral-FF6B35?style=flat-square)](https://ollama.ai)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
+1. Crea tu cuenta y verifica tu correo electrónico.
+2. Completa tu información profesional y elige una plantilla.
+3. Mejora tu perfil con IA y analiza ofertas de empleo.
+4. Exporta tu CV o genera tu portafolio.
 
-</div>
+La plataforma ofrece **Free** (con límites de uso) y **Pro** (suscripción procesada por Stripe). La IA utiliza Ollama de forma local de manera predeterminada; el uso de proveedores externos requiere consentimiento.
 
----
+## Ejecutar en tu equipo
 
-## ¿Qué es CVForge AI?
-
-CVForge AI es una plataforma SaaS completa que permite a desarrolladores y profesionales crear CVs optimizados para sistemas ATS, generar portafolios web automáticamente y mejorar su perfil profesional con inteligencia artificial — todo corriendo **localmente en tu máquina**, sin pagar ni un sol.
-
-La IA funciona con **Ollama**, lo que significa que tus datos nunca salen de tu computadora. No hay costos de API, no hay suscripciones, no hay límites.
-
----
-
-## ¿Qué puedes hacer?
-
-**Crear tu CV profesional**
-Rellena tu información personal, experiencia laboral, educación, habilidades y proyectos desde un formulario intuitivo. El sistema guarda todo automáticamente.
-
-**Optimizar con IA local**
-La IA transforma descripciones simples en frases impactantes con verbos de acción y métricas cuantificables. Por ejemplo: *"hice una app web"* → *"Desarrollé una aplicación web full-stack con arquitectura multi-usuario, mejorando la productividad del equipo en un 40%"*.
-
-**Analizar compatibilidad ATS**
-Pega cualquier oferta de trabajo y el motor ATS propio de la plataforma analiza tu CV, detecta palabras clave faltantes, verbos débiles y te da un puntaje de compatibilidad con sugerencias concretas.
-
-**Exportar PDF profesional**
-Genera un PDF limpio, moderno y 100% legible por sistemas ATS con un solo clic. Disponible en 3 templates: Atlas, Nova y Zenith.
-
-**Generar tu portafolio web**
-Con los datos de tu CV se genera automáticamente una página web personal completa y responsive lista para publicar.
-
-**Crear bios para redes**
-Genera bios profesionales adaptadas para LinkedIn, Twitter/X, GitHub y portafolio con diferentes tonos (profesional, casual, creativo).
-
----
-
-## Stack tecnológico
-
-| Capa | Tecnología | Versión |
-|------|-----------|---------|
-| Backend | Python + FastAPI | 3.11 / 0.111 |
-| ORM | SQLAlchemy + Alembic | 2.0 / 1.13 |
-| Validación | Pydantic v2 | 2.7 |
-| Autenticación | JWT + bcrypt | — |
-| IA local | Ollama + Mistral 7B | latest |
-| PDF | ReportLab | 4.2 |
-| Frontend | Next.js + React | 14.2 / 18.3 |
-| Lenguaje | TypeScript | 5.4 |
-| Estilos | TailwindCSS | 3.4 |
-| Animaciones | Framer Motion | 11.2 |
-| Estado global | Zustand | 4.5 |
-| Formularios | React Hook Form + Zod | 7.5 / 3.23 |
-| Base de datos | SQLite (dev) → PostgreSQL (prod) | — |
-| Contenedores | Docker + Docker Compose | — |
-
----
-
-## Lanzar con Docker
-
-### Requisitos
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado y corriendo
-
-### Comandos
+Necesitas Docker y Docker Compose. Antes de iniciar, configura una clave secreta segura en tu terminal; no debes guardarla en el repositorio.
 
 ```bash
-# 1. Clonar el repositorio
-git clone https://github.com/Hermanitos-S-A/cvforge-ai.git
-cd cvforge-ai
-
-# 2. Levantar todos los servicios
+export SECRET_KEY="$(python3 -c 'import secrets; print(secrets.token_urlsafe(48))')"
 docker compose up -d --build
-
-# 3. Descargar el modelo de IA (primera vez, ~4GB)
-docker exec cvforge-ollama ollama pull mistral
-
-# 4. Abrir la aplicación
-# Frontend  →  http://localhost:3000
-# API Docs  →  http://localhost:8000/api/docs
+docker exec epersona-ollama ollama pull mistral
 ```
 
-### Detener los servicios
+Abre **http://localhost:3000**. Los contenedores y las imágenes se identifican como **ePersona** y el backend utiliza un volumen administrado por Docker para evitar errores de permisos de SQLite en Windows. Ollama no expone su puerto al exterior.
 
-```bash
-docker compose down
-```
+Si utilizabas una versión anterior que guardaba usuarios y currículums en `./data`, detén el proyecto antiguo **sin `-v`**, conserva esa carpeta, ejecuta una sola vez `bash scripts/import-existing-data.sh` desde la raíz del proyecto y después inicia el nuevo Compose. El script crea una copia de respaldo y se niega a sobrescribir datos existentes. No ejecutes `docker compose down -v` porque eliminaría los volúmenes.
 
-### Ver logs en tiempo real
+Para registrar usuarios debes configurar un servidor de correo SMTP. Para habilitar Pro configura tus propias claves y precios de Stripe; sin ellas los pagos permanecen desactivados. En producción también necesitas HTTPS, una base de datos protegida y ejecutar las migraciones Alembic.
 
-```bash
-# Todos los servicios
-docker compose logs -f
+## Tecnologías
 
-# Solo el backend
-docker compose logs -f backend
+Next.js, React, Tailwind CSS, FastAPI, SQLAlchemy, Alembic, Ollama, Stripe y ReportLab.
 
-# Solo el frontend
-docker compose logs -f frontend
-```
+## Privacidad
 
----
+Los currículums y el historial de IA se guardan hasta que los elimines o solicites borrar tu cuenta. Puedes exportar tus datos desde la API autenticada. Los pagos están sujetos a la política de retención de Stripe.
 
-## Modelos de IA disponibles
-
-El sistema funciona con cualquier modelo de Ollama. Por defecto usa Mistral 7B.
-
-```bash
-# Mistral 7B — recomendado, rápido y capaz
-docker exec cvforge-ollama ollama pull mistral
-
-# Llama 3 — alternativa de Meta
-docker exec cvforge-ollama ollama pull llama3
-
-# Gemma 2 — modelo de Google
-docker exec cvforge-ollama ollama pull gemma2
-
-# DeepSeek R1 — especializado en razonamiento
-docker exec cvforge-ollama ollama pull deepseek-r1
-```
-
-Para cambiar el modelo, edita la variable en `docker-compose.yml`:
-```yaml
-OLLAMA_MODEL=llama3
-```
-
----
-
-## Variables de entorno
-
-Copia `.env.example` a `.env` y ajusta los valores:
-
-```bash
-cp .env.example .env
-```
-
-| Variable | Descripción | Default |
-|----------|-------------|---------|
-| `SECRET_KEY` | Clave secreta para JWT | *(requerida)* |
-| `DATABASE_URL` | URL de la base de datos | `sqlite:///./data/cvforge.db` |
-| `OLLAMA_BASE_URL` | URL del servidor Ollama | `http://localhost:11434` |
-| `OLLAMA_MODEL` | Modelo a usar | `mistral` |
-| `ALLOWED_ORIGINS` | Orígenes CORS permitidos | `["http://localhost:3000"]` |
-
----
-
-## Servicios disponibles
-
-| Servicio | URL | Descripción |
-|---------|-----|-------------|
-| Frontend | http://localhost:3000 | Aplicación web Next.js |
-| Backend API | http://localhost:8000 | FastAPI REST API |
-| API Docs (Swagger) | http://localhost:8000/api/docs | Documentación interactiva |
-| Health Check | http://localhost:8000/health | Estado del servidor |
-| Ollama | http://localhost:11434 | Servidor de IA local |
-
----
-
-## Deploy gratuito en producción
-
-| Servicio | Plataforma | Costo |
-|---------|-----------|-------|
-| Frontend | [Vercel](https://vercel.com) | Gratis |
-| Backend | [Render](https://render.com) | Gratis |
-| IA en la nube | [Groq](https://groq.com) (Mistral/Llama) | Gratis |
-| Base de datos | [Turso](https://turso.tech) (SQLite edge) | Gratis |
-
----
-
-## Licencia
-
-MIT License — libre para usar, modificar y distribuir.
-
----
-
-<div align="center">
-
-**CVForge AI** · Hecho con ❤️ · [⭐ Star en GitHub](https://github.com/Hermanitos-S-A/cvforge-ai)
-
-</div>
+**Proyecto en evolución.** La disponibilidad de funciones depende de la configuración y del plan contratado.

@@ -7,6 +7,7 @@ import { Eye, EyeOff, Loader2, AlertCircle, ArrowRight, CheckCircle, Sparkles } 
 import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/stores/authStore";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 
 const steps = [
   { n:"01", title:"Crea tu cuenta",    desc:"Registro en segundos" },
@@ -17,7 +18,7 @@ const steps = [
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { setTokens, setUser } = useAuthStore();
+  
   const [fullName,  setFullName]  = useState("");
   const [email,     setEmail]     = useState("");
   const [password,  setPassword]  = useState("");
@@ -33,7 +34,7 @@ export default function RegisterPage() {
     const e: Record<string,string> = {};
     if (!fullName.trim() || fullName.trim().length < 2) e.fullName = "Mínimo 2 caracteres";
     if (!email.trim() || !/\S+@\S+\.\S+/.test(email))  e.email    = "Email inválido";
-    if (password.length < 8)                            e.password = "Mínimo 8 caracteres";
+    if (password.length < 12 || !/[a-zA-Z]/.test(password) || !/\d/.test(password)) e.password = "Mínimo 12 caracteres, con letras y números";
     if (password !== confirm)                           e.confirm  = "Las contraseñas no coinciden";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -45,17 +46,10 @@ export default function RegisterPage() {
     if (!validate()) return;
     setLoading(true);
     try {
-      const res  = await api.register(email.trim(), password, fullName.trim());
-      setTokens(res.access_token, res.refresh_token);
-      const user = await api.getMe();
-      setUser(user);
+      await api.register(email.trim(), password, fullName.trim());
       setFirstName(fullName.trim().split(" ")[0]);
       setSuccess(true);
-      // New users always go to onboarding
-      setTimeout(() => {
-        toast.success("¡Cuenta creada! Configuremos tu perfil 🎉");
-        router.push("/onboarding");
-      }, 1400);
+      toast.success("Registro recibido. Revisa tu correo y verifica la cuenta para continuar.");
     } catch (err: any) {
       const d = err?.response?.data?.detail;
       setApiError(typeof d === "string" ? d : "Error al crear la cuenta. Intenta de nuevo.");
@@ -74,12 +68,7 @@ export default function RegisterPage() {
           style={{backgroundImage:"linear-gradient(rgba(108,99,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,1) 1px,transparent 1px)",backgroundSize:"40px 40px"}}/>
         <div className="relative z-10">
           <Link href="/" className="flex items-center gap-2.5">
-            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="9" fill="url(#rlg)"/>
-              <path d="M11 10H18L14 17H20L11 26H17L22 17H17L21 10" fill="white"/>
-              <defs><linearGradient id="rlg" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#6c63ff"/><stop offset="100%" stopColor="#22d3ee"/></linearGradient></defs>
-            </svg>
-            <span className="font-bold text-[15px] text-white tracking-tight">CVForge <span style={{color:"#a78bfa"}}>AI</span></span>
+            <BrandLogo size={34} />
           </Link>
         </div>
         <div className="relative z-10">
@@ -130,15 +119,15 @@ export default function RegisterPage() {
                 style={{background:"linear-gradient(135deg,#6c63ff,#22d3ee)"}}>
                 <CheckCircle size={36} className="text-white"/>
               </motion.div>
-              <h2 className="text-2xl font-bold mb-2" style={{color:"#e8e8f0"}}>¡Bienvenido, {firstName}!</h2>
-              <p className="text-sm mb-1" style={{color:"rgba(255,255,255,0.4)"}}>Preparando tu cuestionario de perfil...</p>
-              <Loader2 size={18} className="animate-spin mx-auto mt-3" style={{color:"#6c63ff"}}/>
+              <h2 className="text-2xl font-bold mb-2" style={{color:"#e8e8f0"}}>¡Revisa tu correo, {firstName}!</h2>
+              <p className="text-sm mb-1" style={{color:"rgba(255,255,255,0.4)"}}>Te hemos enviado un enlace de verificación. Debes confirmarlo para ingresar.</p>
+              <Link href="/login" className="mt-5 inline-block text-cyan-300 hover:underline">Ir a iniciar sesión</Link>
             </motion.div>
           ) : (
             <motion.div key="form" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}}
               transition={{duration:0.4}} className="relative z-10 w-full max-w-sm">
               <h1 className="text-[22px] font-bold tracking-tight mb-1" style={{color:"#e8e8f0"}}>Crea tu cuenta gratis</h1>
-              <p className="text-sm mb-7" style={{color:"rgba(255,255,255,0.35)"}}>Sin tarjeta · Sin límites · IA local</p>
+              <p className="text-sm mb-7" style={{color:"rgba(255,255,255,0.35)"}}>Sin tarjeta para Free · Verificación por correo</p>
               <AnimatePresence>
                 {apiError&&(
                   <motion.div initial={{opacity:0,height:0}} animate={{opacity:1,height:"auto"}} exit={{opacity:0,height:0}}

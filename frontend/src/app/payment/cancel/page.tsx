@@ -57,10 +57,7 @@ export default function PaymentCancelPage() {
             </div>
 
             <p className="text-xs text-muted-foreground mt-6">
-              ¿Tienes dudas?{" "}
-              <a href="mailto:soporte@cvforge.ai" className="text-primary hover:underline">
-                Contáctanos →
-              </a>
+              Para resolver dudas sobre pagos, utiliza el portal de facturación de Stripe desde tu cuenta.
             </p>
           </motion.div>
         </motion.div>

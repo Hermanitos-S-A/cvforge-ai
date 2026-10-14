@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useAuthStore } from "@/stores/authStore";
 import { useResumeStore } from "@/stores/resumeStore";
 import { api } from "@/lib/api";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 
 // Types 
 interface OnboardingData {
@@ -202,7 +203,7 @@ export default function OnboardingPage() {
       }
 
       // 8. Mark onboarding as done in localStorage
-      localStorage.setItem("cvforge-onboarding-done", "true");
+      localStorage.setItem("epersona-onboarding-done", "true");
 
       toast.success("¡Perfil creado! Redirigiendo al dashboard...");
       setTimeout(() => router.push("/dashboard"), 1200);
@@ -215,7 +216,7 @@ export default function OnboardingPage() {
   };
 
   const skip = () => {
-    localStorage.setItem("cvforge-onboarding-done", "true");
+    localStorage.setItem("epersona-onboarding-done", "true");
     router.push("/dashboard");
   };
 
@@ -227,17 +228,8 @@ export default function OnboardingPage() {
       <div className="border-b border-border bg-card/50 px-6 py-4">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="9" fill="url(#og)"/>
-              <path d="M11 10H18L14 17H20L11 26H17L22 17H17L21 10" fill="white"/>
-              <defs>
-                <linearGradient id="og" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#6c63ff"/>
-                  <stop offset="100%" stopColor="#22d3ee"/>
-                </linearGradient>
-              </defs>
-            </svg>
-            <span className="font-bold text-sm">CVForge <span className="text-primary">AI</span></span>
+            <BrandLogo size={30} />
+            
           </div>
           <button onClick={skip} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
             Completar después →

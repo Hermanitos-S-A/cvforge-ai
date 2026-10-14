@@ -11,8 +11,8 @@ import {
 import { toast } from "sonner";
 import { useAuthStore } from "@/stores/authStore";
 import { api } from "@/lib/api";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 
-const ADMIN_EMAILS = ["admin@cvforge.com","stefannysalas2002@gmail.com","jpsalas9@gmail.com"];
 
 interface Stats {
   total_users:number; pro_users:number; free_users:number;
@@ -85,7 +85,8 @@ function ResetPasswordModal({ userId, userEmail, onClose }:
 
 export default function AdminPage() {
   const router = useRouter();
-  const { user, logout } = useAuthStore();
+  const { user, logout, setUser } = useAuthStore();
+  const [identityChecked, setIdentityChecked] = useState(false);
   const [stats,    setStats]    = useState<Stats|null>(null);
   const [users,    setUsers]    = useState<AdminUser[]>([]);
   const [total,    setTotal]    = useState(0);
@@ -97,13 +98,22 @@ export default function AdminPage() {
   const [resetPw,  setResetPw]  = useState<{id:number;email:string}|null>(null);
 
   useEffect(() => {
-    if (!user) { router.push("/login"); return; }
-    if (!ADMIN_EMAILS.includes(user.email)) { toast.error("Acceso denegado"); router.push("/dashboard"); return; }
-    loadData();
-  }, [user]);
+    api.getMe().then((account) => {
+      setUser(account);
+      if (account.role !== "admin") {
+        toast.error("Acceso denegado");
+        router.replace("/dashboard");
+      }
+    }).catch(() => router.replace("/login"))
+      .finally(() => setIdentityChecked(true));
+  }, [router, setUser]);
 
   useEffect(() => {
-    if (user && ADMIN_EMAILS.includes(user.email)) {
+    if (identityChecked && user?.role === "admin") loadData();
+  }, [identityChecked, user?.role]);
+
+  useEffect(() => {
+    if (identityChecked && user?.role === "admin") {
       const t = setTimeout(loadData, 300);
       return () => clearTimeout(t);
     }
@@ -160,7 +170,7 @@ export default function AdminPage() {
     });
   };
 
-  if (!user || !ADMIN_EMAILS.includes(user.email)) return null;
+  if (!identityChecked || !user || user.role !== "admin") return null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -171,16 +181,13 @@ export default function AdminPage() {
       <header className="border-b border-border bg-card sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background:"linear-gradient(135deg,#6c63ff,#22d3ee)"}}>
-              <Shield size={16} className="text-white"/>
-            </div>
-            <span className="font-bold text-sm">CVForge AI</span>
+            <BrandLogo size={32} />
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{background:"linear-gradient(135deg,#6c63ff,#22d3ee)"}}>ADMIN</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground hidden sm:block">{user.email}</span>
             <button onClick={()=>router.push("/dashboard")} className="text-xs px-3 py-1.5 rounded-lg border border-border hover:bg-secondary transition-colors">Dashboard</button>
-            <button onClick={()=>{logout();router.push("/login");}} className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground">
+            <button onClick={async()=>{ try {await api.logout();} finally {logout();router.push("/login");} }} className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground">
               <LogOut size={13}/> Salir
             </button>
           </div>

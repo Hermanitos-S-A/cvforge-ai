@@ -46,9 +46,8 @@ export default function UpgradePage() {
   const handleUpgrade = async () => {
     setLoading(true);
     try {
-      await (api as any).simulateUpgrade();
-      if (user) setUser({ ...user, plan: "pro" });
-      toast.success("Plan Pro activado ✨");
+      const result = await api.createCheckoutSession(billing === "monthly" ? "pro_monthly" : "pro_yearly");
+      window.location.assign(result.checkout_url);
     } catch (err: any) {
       toast.error(err?.response?.data?.detail || "Error al activar");
     } finally {
@@ -58,9 +57,8 @@ export default function UpgradePage() {
 
   const handleDowngrade = async () => {
     try {
-      await (api as any).downgradePlan();
-      if (user) setUser({ ...user, plan: "free" });
-      toast.success("Plan cambiado a Free");
+      const result = await api.createPortalSession();
+      window.location.assign(result.portal_url);
     } catch {
       toast.error("Error al cambiar plan");
     }
@@ -72,7 +70,7 @@ export default function UpgradePage() {
       <div className="text-center mb-10">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4"
           style={{ background: "rgba(108,99,255,0.08)", border: "1px solid rgba(108,99,255,0.15)", color: "#6c63ff" }}>
-          <Crown size={12} /> Planes CVForge AI
+          <Crown size={12} /> Planes ePersona
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-3">
           {isPro ? "Tu plan actual: Pro ✨" : "Elige tu plan"}
@@ -185,8 +183,8 @@ export default function UpgradePage() {
               className="w-full py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-60"
               style={{ background: "linear-gradient(135deg,#6c63ff,#22d3ee)", boxShadow: "0 4px 20px rgba(108,99,255,0.3)" }}>
               {loading
-                ? <><Loader2 size={14} className="animate-spin" />Activando...</>
-                : <><Sparkles size={14} />Activar Pro (Demo) <ArrowRight size={13} /></>
+                ? <><Loader2 size={14} className="animate-spin" />Redirigiendo...</>
+                : <><Sparkles size={14} />Continuar a pago seguro <ArrowRight size={13} /></>
               }
             </button>
           )}
@@ -197,10 +195,10 @@ export default function UpgradePage() {
       <div className="p-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 text-center mb-5">
         <div className="flex items-center justify-center gap-2 mb-2">
           <Zap size={14} className="text-amber-400" />
-          <p className="text-sm font-semibold text-amber-400">Pasarela de pago — Próximamente</p>
+          <p className="text-sm font-semibold text-amber-400">Pago seguro gestionado por Stripe</p>
         </div>
         <p className="text-xs text-muted-foreground">
-          Por ahora puedes activar el plan Pro en modo demo. La integración de pagos estará disponible en una próxima versión.
+          El plan Pro solo se activa después de la confirmación de Stripe. No compartas datos bancarios por correo.
         </p>
       </div>
 

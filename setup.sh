@@ -1,21 +1,15 @@
-#!/bin/bash
-# CVForge AI — Quick Setup Script
-set -e
-echo "⚡ CVForge AI Setup"
-echo "==================="
-
-# Generate secret key
-SECRET=$(python3 -c "import secrets; print(secrets.token_hex(32))" 2>/dev/null || openssl rand -hex 32)
-
-# Create .env files
-cp backend/.env.example backend/.env
-sed -i "s/your-super-secret-key-change-in-production-min-32-chars/$SECRET/" backend/.env
-cp .env.example .env
-sed -i "s/generate-a-strong-secret-key-min-32-chars/$SECRET/" .env
-
-echo "✅ .env files created with secure SECRET_KEY"
-echo ""
-echo "Next steps:"
-echo "  1. docker compose up -d"
-echo "  2. docker exec cvforge-ollama ollama pull mistral"
-echo "  3. open http://localhost:3000"
+#!/usr/bin/env bash
+set -euo pipefail
+# ePersona never creates .env files or prints secret values.
+if [ -z "${SECRET_KEY:-}" ]; then
+  echo "Set SECRET_KEY in your terminal or secret manager before running setup."
+  echo 'Example: export SECRET_KEY="$(python3 -c '\''import secrets; print(secrets.token_urlsafe(48))'\'')"'
+  exit 1
+fi
+if [ "${ENVIRONMENT:-development}" = "production" ]; then
+  echo "Production setup must provide HTTPS, SMTP and Stripe credentials explicitly."
+fi
+echo "Checking Docker Compose configuration..."
+docker compose config --quiet
+echo "Ready. To start: docker compose up -d --build"
+echo "To download the local AI model: docker exec epersona-ollama ollama pull mistral"

@@ -39,12 +39,8 @@ export default function AIAssistantPage() {
       const res = await api.optimizeText(input, current.context);
       setOutput({ text: res.optimized, improvements: res.improvements || [] });
       toast.success("Optimizacion completa!");
-    } catch {
-      setOutput({
-        text: "Desarrolle y mantuve aplicaciones web de alto rendimiento utilizando frameworks modernos, logrando una mejora del 40% en eficiencia del sistema y entregando experiencias de usuario excepcionales.",
-        improvements: ["Verbos de accion fuertes", "Metricas cuantificables incluidas", "Keywords ATS mejoradas"],
-      });
-      toast.info("Demo — levanta Ollama para IA real: ollama serve");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.detail || "No se pudo conectar con el proveedor de IA.");
     } finally { setLoading(false); }
   };
 
@@ -66,7 +62,7 @@ export default function AIAssistantPage() {
           <h1 className="text-2xl font-bold">Asistente IA</h1>
           <div className="flex items-center gap-2 mt-0.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <p className="text-xs text-muted-foreground">Ollama + Mistral 7B + Local + 100% gratis</p>
+            <p className="text-xs text-muted-foreground">IA local de forma predeterminada · Límites según tu plan</p>
           </div>
         </div>
       </div>

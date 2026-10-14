@@ -6,20 +6,19 @@ import { api } from "@/lib/api";
 
 export function useAuth() {
   const router = useRouter();
-  const store  = useAuthStore();
+  const store = useAuthStore();
 
   useEffect(() => {
-    if (!store.isAuthenticated) {
-      router.push("/login");
-      return;
-    }
-    const done = localStorage.getItem("cvforge-onboarding-done");
-    if (!done) {
-      router.push("/onboarding");
-      return;
-    }
-    api.getMe().then(store.setUser).catch(() => {});
-  }, [store.isAuthenticated]);
+    // Migrate away from the legacy localStorage token cache. Never read tokens.
+    localStorage.removeItem("cvforge-auth");
+    api.getMe().then((user) => {
+      useAuthStore.getState().setUser(user);
+      if (!(localStorage.getItem("epersona-onboarding-done") || localStorage.getItem("cvforge-onboarding-done"))) router.replace("/onboarding");
+    }).catch(() => {
+      useAuthStore.getState().logout();
+      router.replace("/login");
+    });
+  }, [router]);
 
   return { user: store.user, isAuthenticated: store.isAuthenticated };
 }

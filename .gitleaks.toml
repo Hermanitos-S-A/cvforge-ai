@@ -1,0 +1,7 @@
+title = "ePersona baseline secret detection"
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Never allowlist real credentials; only public logo binary is excluded"
+paths = ['''frontend/public/epersona-logo.png''', '''frontend/public/favicon.ico''']

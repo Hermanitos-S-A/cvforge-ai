@@ -5,9 +5,9 @@ import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "CVForge AI", template: "%s | CVForge AI" },
-  description: "Crea CVs ATS-optimizados con IA local. 100% gratis.",
-  icons: { icon: "/favicon.svg" },
+  title: { default: "ePersona", template: "%s | ePersona" },
+  description: "Crea tu CV, mejora tu perfil profesional y exporta fácilmente con ePersona.",
+  icons: { icon: "/favicon.ico" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

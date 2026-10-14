@@ -1,28 +1,63 @@
+from html import escape
+from urllib.parse import urlsplit, quote
+import re
+
+
+def safe_url(value):
+    url = str(value or "").strip()
+    if any(ord(ch) < 32 for ch in url) or len(url) > 500:
+        return ""
+    try:
+        parts = urlsplit(url)
+    except ValueError:
+        return ""
+    if parts.scheme.lower() not in {"https", "http"} or not parts.netloc or parts.username or parts.password:
+        return ""
+    return escape(url, quote=True)
+
+
+def safe_text(value):
+    return escape(str(value or ""), quote=True)
+
+
 class PortfolioService:
     def generate_html(self, data: dict) -> str:
-        p = data.get("personal", {})
-        name = p.get("name", "Developer")
-        title = p.get("title", "Software Engineer")
-        bio = data.get("summary", "")
-        skills_html = "".join(f'<span class="pill">{s["name"]}</span>' for s in data.get("skills", []))
+        p_raw = data.get("personal", {}) or {}
+        p = {key: safe_text(value) for key, value in p_raw.items()}
+        p["linkedin"] = safe_url(p_raw.get("linkedin"))
+        p["github"] = safe_url(p_raw.get("github"))
+        email = str(p_raw.get("email", ""))
+        p["email"] = safe_text(email) if re.fullmatch(r"[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9.-]+", email) else ""
+        name = p.get("name") or "Developer"
+        title = p.get("title") or "Software Engineer"
+        bio = safe_text(data.get("summary", ""))
+        skills_html = "".join(f'<span class="pill">{safe_text(s.get("name", ""))}</span>' for s in data.get("skills", []))
         exp_html = ""
-        for e in data.get("experiences", []):
+        for original in data.get("experiences", []):
+            e = {key: safe_text(value) for key, value in original.items() if key not in ("technologies", "is_current")}
+            e["is_current"] = original.get("is_current")
             end = "Present" if e.get("is_current") else (e.get("end_date") or "")
             exp_html += f'<div class="tl-item"><div class="tl-marker"></div><div class="tl-content"><h3>{e.get("role","")}</h3><span class="tl-company">{e.get("company","")}</span><span class="tl-date">{e.get("start_date","")} – {end}</span><p>{e.get("description","")}</p></div></div>'
         proj_html = ""
-        for pr in data.get("projects", []):
-            techs = "".join(f'<span class="tag">{t}</span>' for t in (pr.get("technologies") or []))
+        for original in data.get("projects", []):
+            pr = {key: safe_text(value) for key, value in original.items() if key not in ("technologies", "github_url", "demo_url")}
+            pr["technologies"] = original.get("technologies")
+            pr["github_url"] = safe_url(original.get("github_url"))
+            pr["demo_url"] = safe_url(original.get("demo_url"))
+            techs = "".join(f'<span class="tag">{safe_text(t)}</span>' for t in (pr.get("technologies") or []))
             links = ""
-            if pr.get("github_url"): links += f'<a href="{pr["github_url"]}" target="_blank">GitHub ↗</a> '
-            if pr.get("demo_url"): links += f'<a href="{pr["demo_url"]}" target="_blank">Live Demo ↗</a>'
+            if pr.get("github_url"): links += f'<a href="{pr["github_url"]}" target="_blank" rel="noopener noreferrer">GitHub ↗</a> '
+            if pr.get("demo_url"): links += f'<a href="{pr["demo_url"]}" target="_blank" rel="noopener noreferrer">Live Demo ↗</a>'
             proj_html += f'<div class="proj-card"><h3>{pr.get("name","")}</h3><p>{pr.get("description","")}</p><div class="tags">{techs}</div><div class="proj-links">{links}</div></div>'
         email_link = f'<a href="mailto:{p["email"]}">Email</a>' if p.get("email") else ""
-        linkedin_link = f'<a href="{p["linkedin"]}" target="_blank">LinkedIn</a>' if p.get("linkedin") else ""
-        github_link = f'<a href="{p["github"]}" target="_blank">GitHub</a>' if p.get("github") else ""
+        linkedin_link = f'<a href="{p["linkedin"]}" target="_blank" rel="noopener noreferrer">LinkedIn</a>' if p.get("linkedin") else ""
+        github_link = f'<a href="{p["github"]}" target="_blank" rel="noopener noreferrer">GitHub</a>' if p.get("github") else ""
         return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta charset="UTF-8"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src https: data:; script-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>{name} — Portfolio</title>
 <style>
 *{{margin:0;padding:0;box-sizing:border-box;}}
@@ -71,5 +106,5 @@ footer strong{{color:var(--accent2);}}
 {"<section><h2 class='section-title'>Skills</h2><div class='pills'>" + skills_html + "</div></section>" if skills_html else ""}
 {"<section><h2 class='section-title'>Experience</h2><div class='timeline'>" + exp_html + "</div></section>" if exp_html else ""}
 {"<section><h2 class='section-title'>Projects</h2><div class='projects-grid'>" + proj_html + "</div></section>" if proj_html else ""}
-<footer>Built with <strong>CVForge AI</strong> · {name}</footer>
+<footer>Creado con <strong>ePersona</strong> · {name}</footer>
 </body></html>"""

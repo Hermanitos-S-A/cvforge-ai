@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useAuthStore } from "@/stores/authStore";
+import { api } from "@/lib/api";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 
 const NAV = [
   { label:"Overview",      href:"/dashboard",            icon:LayoutDashboard, section:"main" },
@@ -24,18 +26,7 @@ const NAV = [
 const SECTIONS: Record<string,string> = { main:"General", builder:"Construir", tools:"Analizar" };
 
 function Logo() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-      <rect width="36" height="36" rx="9" fill="url(#dlg)"/>
-      <path d="M11 10H18L14 17H20L11 26H17L22 17H17L21 10" fill="white"/>
-      <defs>
-        <linearGradient id="dlg" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#6c63ff"/>
-          <stop offset="100%" stopColor="#22d3ee"/>
-        </linearGradient>
-      </defs>
-    </svg>
-  );
+  return <BrandLogo size={32} withText={false} />;
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -46,7 +37,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [open, setOpen]     = useState(false);
   const isPro = user?.plan === "pro";
 
-  const handleLogout = () => { logout(); router.push("/login"); };
+  const handleLogout = async () => {
+    try { await api.logout(); } finally { logout(); router.push("/login"); }
+  };
 
   function SidebarContent() {
     return (
@@ -55,7 +48,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex items-center gap-2.5 px-4 py-5 border-b border-border flex-shrink-0">
           <Logo />
           <span className="font-bold text-sm tracking-tight">
-            CVForge <span className="text-primary">AI</span>
+            ePersona
           </span>
         </div>
 

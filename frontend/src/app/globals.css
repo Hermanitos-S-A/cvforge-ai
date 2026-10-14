@@ -5,51 +5,62 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 240 10% 8%;
-    --card: 0 0% 98%;
-    --card-foreground: 240 10% 8%;
-    --primary: 248 87% 68%;
+    --foreground: 222 84% 5%;
+    --card: 220 33% 98%;
+    --card-foreground: 222 84% 5%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 5% 93%;
-    --secondary-foreground: 240 6% 20%;
-    --muted: 240 5% 93%;
-    --muted-foreground: 240 4% 46%;
-    --border: 240 6% 88%;
-    --input: 240 6% 88%;
-    --destructive: 0 84% 60%;
+    --secondary: 220 33% 95%;
+    --secondary-foreground: 222 70% 13%;
+    --muted: 220 20% 94%;
+    --muted-foreground: 222 25% 32%;
+    --border: 220 23% 83%;
+    --input: 220 23% 83%;
+    --destructive: 0 70% 42%;
     --radius: 0.75rem;
   }
   .dark {
-    --background: 240 10% 4%;
-    --foreground: 240 5% 92%;
-    --card: 240 8% 7%;
-    --card-foreground: 240 5% 92%;
-    --primary: 248 87% 68%;
+    --background: 222 84% 5%;
+    --foreground: 0 0% 100%;
+    --card: 223 69% 9%;
+    --card-foreground: 0 0% 100%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 6% 12%;
-    --secondary-foreground: 240 5% 65%;
-    --muted: 240 6% 12%;
-    --muted-foreground: 240 5% 45%;
-    --border: 240 6% 15%;
-    --input: 240 6% 15%;
-    --destructive: 0 72% 51%;
+    --secondary: 223 48% 15%;
+    --secondary-foreground: 215 35% 87%;
+    --muted: 223 48% 15%;
+    --muted-foreground: 215 22% 72%;
+    --border: 220 42% 22%;
+    --input: 220 42% 22%;
+    --destructive: 0 74% 53%;
     --radius: 0.75rem;
   }
   * { @apply border-border; box-sizing: border-box; }
   body { @apply bg-background text-foreground; font-family: system-ui, -apple-system, sans-serif; }
+  button, a, input, textarea, select { @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400; }
+  input, textarea, select { font-size: 16px; }
+  button { min-height: 44px; }
+  html { overflow-x: clip; }
 }
 
 @layer components {
   .input-base {
-    @apply w-full px-3.5 py-2.5 rounded-xl border border-border bg-secondary/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all;
+    @apply w-full px-3.5 py-3 rounded-xl border border-border bg-secondary/50 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all;
   }
-  .card-base {
-    @apply p-5 rounded-2xl border border-border bg-card;
-  }
+  .card-base { @apply p-5 rounded-2xl border border-border bg-card; }
   .text-gradient {
-    background: linear-gradient(135deg, #a78bfa 0%, #6c63ff 40%, #22d3ee 100%);
+    background: linear-gradient(135deg, #22D3EE 0%, #2563EB 48%, #4F20FF 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

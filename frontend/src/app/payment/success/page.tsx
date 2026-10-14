@@ -10,6 +10,7 @@ import { api } from "@/lib/api";
 function SuccessContent() {
   const { user, setUser } = useAuthStore();
   const [loading, setLoading] = useState(true);
+  const [activated, setActivated] = useState(false);
   const name = user?.full_name?.split(" ")[0] || "usuario";
 
   useEffect(() => {
@@ -17,6 +18,7 @@ function SuccessContent() {
       try {
         const updated = await api.getMe();
         setUser(updated);
+        setActivated(updated.plan === "pro");
       } catch { }
       finally { setLoading(false); }
     };
@@ -41,13 +43,13 @@ function SuccessContent() {
       </motion.div>
       <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4"
         style={{ background: "rgba(108,99,255,0.08)", border: "1px solid rgba(108,99,255,0.15)", color: "#6c63ff" }}>
-        <Sparkles size={11} /> Plan Pro activado
+        <Sparkles size={11} /> {activated ? "Plan Pro activado" : "Pago pendiente de confirmación"}
       </div>
-      <h1 className="text-3xl font-extrabold tracking-tight mb-3">¡Bienvenido al Pro, {name}! 🎉</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight mb-3">{activated ? `¡Bienvenido al Pro, ${name}!` : "Estamos verificando tu suscripción"}</h1>
       <p className="text-muted-foreground text-sm leading-relaxed mb-8 max-w-sm mx-auto">
-        Tu pago fue procesado correctamente. Ahora tienes acceso a todas las funciones premium.
+        {activated ? "Stripe confirmó tu suscripción y ya tienes acceso a Pro." : "No se activará Pro hasta recibir la confirmación verificada de Stripe. Inténtalo de nuevo en unos segundos."}
       </p>
-      <div className="p-5 rounded-2xl border border-primary/20 bg-primary/5 mb-6 text-left">
+      {activated && <div className="p-5 rounded-2xl border border-primary/20 bg-primary/5 mb-6 text-left">
         <p className="font-semibold text-sm mb-3">✨ Ahora tienes acceso a:</p>
         <ul className="space-y-2">
           {[
@@ -64,6 +66,7 @@ function SuccessContent() {
           ))}
         </ul>
       </div>
+      }
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
         <Link href="/dashboard"
           className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-white"

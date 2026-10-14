@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { ArrowRight, CheckCircle, Star } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 
 function FadeIn({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
   const ref = useRef(null);
@@ -20,23 +21,9 @@ function FadeIn({ children, delay = 0, className = "" }: { children: React.React
 }
 
 function Logo() {
-  return (
-    <Link href="/" className="flex items-center gap-2.5">
-      <svg width="30" height="30" viewBox="0 0 36 36" fill="none">
-        <rect width="36" height="36" rx="9" fill="url(#pG)"/>
-        <path d="M11 10H18L14 17H20L11 26H17L22 17H17L21 10" fill="white"/>
-        <defs>
-          <linearGradient id="pG" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#6c63ff"/>
-            <stop offset="100%" stopColor="#22d3ee"/>
-          </linearGradient>
-        </defs>
-      </svg>
-      <span className="font-bold text-[15px] tracking-tight" style={{ color:"#111" }}>
-        CVForge <span style={{ color:"#7c6fff" }}>AI</span>
-      </span>
-    </Link>
-  );
+  return <Link href="/" aria-label="ePersona - inicio" className="flex items-center">
+    <BrandLogo size={36} />
+  </Link>;
 }
 
 export default function HomePage() {
@@ -61,7 +48,7 @@ export default function HomePage() {
             <Link href="/login" className="text-sm text-gray-500 hover:text-gray-900 hidden sm:block">{t("nav.login")}</Link>
             <Link href="/register"
               className="flex items-center gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-xl font-semibold text-white whitespace-nowrap"
-              style={{ background:"linear-gradient(135deg,#6c63ff,#22d3ee)" }}>
+              style={{ background:"linear-gradient(135deg,#2563EB,#22d3ee)" }}>
               {t("nav.start")} <ArrowRight size={13} />
             </Link>
           </div>
@@ -69,9 +56,9 @@ export default function HomePage() {
       </nav>
 
       {/* HERO — fondo #808080 gris */}
-      <section className="pt-36 pb-20 px-4 sm:px-6 relative" style={{ background:"linear-gradient(180deg, #808080 0%, #6b6b6b 40%, #ffffff 100%)" }}>
+      <section className="pt-36 pb-20 px-4 sm:px-6 relative" style={{ background:"linear-gradient(150deg, #020617 0%, #0b1d55 52%, #2563EB 100%)" }}>
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full pointer-events-none"
-          style={{ background:"radial-gradient(ellipse,rgba(108,99,255,0.15) 0%,transparent 70%)" }} />
+          style={{ background:"radial-gradient(ellipse,rgba(79,32,255,0.15) 0%,transparent 70%)" }} />
         <div className="relative max-w-4xl mx-auto text-center">
           <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }}>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-8"
@@ -98,7 +85,7 @@ export default function HomePage() {
             className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
             <Link href="/register"
               className="flex items-center gap-2 px-6 sm:px-7 py-3.5 rounded-xl font-bold text-sm bg-white"
-              style={{ color:"#6c63ff", boxShadow:"0 8px 28px rgba(0,0,0,0.2)" }}>
+              style={{ color:"#2563EB", boxShadow:"0 8px 28px rgba(0,0,0,0.2)" }}>
               {t("hero.cta_primary")} <ArrowRight size={15} />
             </Link>
             <Link href="/login"
@@ -128,16 +115,16 @@ export default function HomePage() {
               <div className="w-3 h-3 rounded-full bg-amber-400/70" />
               <div className="w-3 h-3 rounded-full bg-green-400/70" />
               <div className="flex-1 mx-4 rounded-full px-3 py-1 text-[11px] font-mono" style={{ background:"rgba(255,255,255,0.06)", color:"rgba(255,255,255,0.3)" }}>
-                cvforge.ai/dashboard
+                ePersona / dashboard
               </div>
             </div>
             <div className="bg-[#0a0a0f] p-4 sm:p-5 grid grid-cols-4 gap-2 sm:gap-3 min-h-[200px]">
               <div className="col-span-1 bg-[#111118] rounded-xl border border-[#1e1e2e] p-2 sm:p-3 flex flex-col gap-1">
                 <div className="flex items-center gap-1.5 pb-2 border-b border-[#1e1e2e] mb-1">
-                  <div className="w-4 h-4 rounded-md flex-shrink-0" style={{ background:"linear-gradient(135deg,#6c63ff,#22d3ee)" }}>
+                  <div className="w-4 h-4 rounded-md flex-shrink-0" style={{ background:"linear-gradient(135deg,#2563EB,#22d3ee)" }}>
                     <svg viewBox="0 0 36 36" fill="none" className="w-full h-full p-0.5"><path d="M11 10H18L14 17H20L11 26H17L22 17H17L21 10" fill="white"/></svg>
                   </div>
-                  <span className="text-[9px] font-bold text-white truncate">CVForge AI</span>
+                  <span className="text-[9px] font-bold text-white truncate">ePersona</span>
                 </div>
                 {["Mi panel","Mi CV","IA","ATS","Mi web"].map((item,i) => (
                   <div key={item} className={"text-[9px] px-1.5 py-1 rounded " + (i===0?"bg-violet-600/15 text-violet-300":"text-[#555]")}>{item}</div>
@@ -159,7 +146,7 @@ export default function HomePage() {
                       <svg width="36" height="36" viewBox="0 0 48 48">
                         <circle cx="24" cy="24" r="18" fill="none" stroke="#1e1e2e" strokeWidth="5"/>
                         <circle cx="24" cy="24" r="18" fill="none" stroke="url(#mg)" strokeWidth="5" strokeLinecap="round" strokeDasharray="113" strokeDashoffset="15" transform="rotate(-90 24 24)"/>
-                        <defs><linearGradient id="mg"><stop offset="0%" stopColor="#6c63ff"/><stop offset="100%" stopColor="#22d3ee"/></linearGradient></defs>
+                        <defs><linearGradient id="mg"><stop offset="0%" stopColor="#2563EB"/><stop offset="100%" stopColor="#22d3ee"/></linearGradient></defs>
                         <text x="24" y="28" textAnchor="middle" fill="#e8e8f0" fontSize="11" fontWeight="bold">87</text>
                       </svg>
                       <div className="flex flex-col gap-1 flex-1">
@@ -181,7 +168,7 @@ export default function HomePage() {
                         <div key={n} className="flex items-center gap-1.5">
                           <span className="text-[7px] text-[#555] w-10">{n}</span>
                           <div className="flex-1 h-1 bg-[#1e1e2e] rounded-full">
-                            <div className="h-full rounded-full" style={{width:p,background:"linear-gradient(90deg,#6c63ff,#22d3ee)"}}/>
+                            <div className="h-full rounded-full" style={{width:p,background:"linear-gradient(90deg,#2563EB,#22d3ee)"}}/>
                           </div>
                         </div>
                       ))}
@@ -199,7 +186,7 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto">
           <FadeIn className="text-center mb-10 sm:mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-4"
-              style={{ background:"rgba(108,99,255,0.07)", border:"1px solid rgba(108,99,255,0.12)", color:"#6c63ff" }}>
+              style={{ background:"rgba(79,32,255,0.07)", border:"1px solid rgba(79,32,255,0.12)", color:"#2563EB" }}>
               {t("features.label")}
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-3 text-gray-900">{t("features.title")}</h2>
@@ -224,7 +211,7 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto">
           <FadeIn className="text-center mb-10 sm:mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-4"
-              style={{ background:"rgba(108,99,255,0.07)", border:"1px solid rgba(108,99,255,0.12)", color:"#6c63ff" }}>
+              style={{ background:"rgba(79,32,255,0.07)", border:"1px solid rgba(79,32,255,0.12)", color:"#2563EB" }}>
               {t("how.label")}
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-3 text-gray-900">{t("how.title")}</h2>
@@ -235,7 +222,7 @@ export default function HomePage() {
               <FadeIn key={i} delay={i*0.1}>
                 <div className="text-center">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white font-bold text-base sm:text-lg"
-                    style={{ background:"linear-gradient(135deg,#6c63ff,#22d3ee)" }}>
+                    style={{ background:"linear-gradient(135deg,#2563EB,#22d3ee)" }}>
                     {i+1}
                   </div>
                   <h3 className="font-bold text-xs sm:text-sm mb-1 text-gray-900">{step.title}</h3>
@@ -264,7 +251,7 @@ export default function HomePage() {
                   <p className="text-sm text-gray-600 leading-relaxed mb-5">"{r.text}"</p>
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                      style={{ background:"linear-gradient(135deg,#6c63ff,#22d3ee)" }}>
+                      style={{ background:"linear-gradient(135deg,#2563EB,#22d3ee)" }}>
                       {r.name[0]}
                     </div>
                     <div>
@@ -288,7 +275,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
               <Link href="/register"
                 className="flex items-center gap-2 px-7 sm:px-8 py-3.5 rounded-xl font-bold text-sm text-white w-full sm:w-auto justify-center"
-                style={{ background:"linear-gradient(135deg,#6c63ff,#22d3ee)", boxShadow:"0 8px 28px rgba(108,99,255,0.25)" }}>
+                style={{ background:"linear-gradient(135deg,#2563EB,#22d3ee)", boxShadow:"0 8px 28px rgba(79,32,255,0.25)" }}>
                 {t("cta.primary")} <ArrowRight size={15}/>
               </Link>
               <Link href="/login"

@@ -7,6 +7,7 @@ import { Eye, EyeOff, Loader2, AlertCircle, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/stores/authStore";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 
 const perks = [
   "Plantillas ATS-optimizadas",
@@ -18,7 +19,7 @@ const perks = [
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setTokens, setUser } = useAuthStore();
+  const { setUser } = useAuthStore();
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -40,15 +41,14 @@ export default function LoginPage() {
     if (!validate()) return;
     setLoading(true);
     try {
-      const res  = await api.login(email.trim(), password);
-      setTokens(res.access_token, res.refresh_token);
+      await api.login(email.trim(), password);
       const user = await api.getMe();
       setUser(user);
       toast.success(`¡Bienvenido, ${user.full_name?.split(" ")[0]}!`);
-      const done = localStorage.getItem("cvforge-onboarding-done");
+      const done = localStorage.getItem("epersona-onboarding-done") || localStorage.getItem("cvforge-onboarding-done");
       router.push(done ? "/dashboard" : "/onboarding");
-    } catch {
-      setApiError("Email o contraseña incorrectos. Verifica tus datos.");
+    } catch (error: any) {
+      setApiError(error?.response?.status === 403 ? "Verifica tu correo electrónico antes de iniciar sesión." : "Email o contraseña incorrectos. Verifica tus datos.");
     } finally { setLoading(false); }
   };
 
@@ -64,12 +64,7 @@ export default function LoginPage() {
           style={{backgroundImage:"linear-gradient(rgba(108,99,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,1) 1px,transparent 1px)",backgroundSize:"40px 40px"}}/>
         <div className="relative z-10">
           <Link href="/" className="flex items-center gap-2.5">
-            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="9" fill="url(#llg)"/>
-              <path d="M11 10H18L14 17H20L11 26H17L22 17H17L21 10" fill="white"/>
-              <defs><linearGradient id="llg" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#6c63ff"/><stop offset="100%" stopColor="#22d3ee"/></linearGradient></defs>
-            </svg>
-            <span className="font-bold text-[15px] text-white tracking-tight">CVForge <span style={{color:"#a78bfa"}}>AI</span></span>
+            <BrandLogo size={34} />
           </Link>
         </div>
         <div className="relative z-10">
